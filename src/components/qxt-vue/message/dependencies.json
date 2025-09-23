@@ -1,0 +1,9 @@
+{
+    "shadcn-vue": [
+        "avatar"
+    ],
+    "packages": [
+        "lucide-vue-next"
+    ],
+    "selfdep": []
+}
