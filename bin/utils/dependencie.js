@@ -1,6 +1,8 @@
 import { exec } from 'child_process';
 import { promisify } from 'util';
-import { _qxtCompsDir } from './source-path.js';
+import path from 'path';
+import { pathToFileURL } from 'url';
+import { _qxtCompsDir, _rootDir } from './source-path.js';
 import { fileExists } from './fs-ext.js';
 import importer from './importer.js';
 import chalk from 'chalk';
@@ -18,7 +20,7 @@ export function installAll(tasks, onProgress) {
     const promiseTasks = Array.from(tasks);
     // 包装每个 Promise，监听其 settle 状态
     const wrappedPromises = promiseTasks.map((task, index) => {
-        const taskPromise = execAsync(task);
+        const taskPromise = execAsync(task.cmd);
         //const taskPromise = new Promise((resolve) => setTimeout(resolve, index * 1000))
         return Promise.resolve(taskPromise)
             .then(
@@ -55,8 +57,10 @@ export async function dependencieTask(component, aliases) {
             return { comp, exist: await fileExists(`${aliases.ui}\\${comp}`) };
         }));
         // 过滤已安装的组件
-        comps = comps.filter(comp => !comp.exist).map(({ comp }) => comp);
-        task.push(...comps.map(comp => `npx shadcn-vue@latest add ${comp}`));
+        comps = comps.filter(comp => !comp.exist).map(({ comp }) => comp).map(comp => {
+            return { comp, cmd: `npx shadcn-vue@latest add ${comp}` }
+        });
+        task.push(...comps);
     }
     // npm依赖
     const packages = dependencies['packages'];
@@ -64,20 +68,22 @@ export async function dependencieTask(component, aliases) {
         const cwd = process.cwd();
         // 检查npm依赖是否已安装
         const installed = await importer(`${cwd}/package.json`);
-        const pkg_task = packages.filter(pkg => !installed.dependencies[pkg]).map(pkg => `npm install ${pkg}`);
+        const pkg_task = packages.filter(pkg => !installed.dependencies[pkg]).map(pkg => {
+            return { comp: pkg, cmd: `npm install ${pkg}` }
+        });
         task.push(...pkg_task);
     }
     // 组件自身依赖
-    const selfdep = dependencies['selfdep'];
+    const selfdep = dependencies['self'];
     if (selfdep && selfdep.length) {
         const cwd = process.cwd();
-        const selfComps = await Promise.all(selfdep.map(comp => ({ comp, exist: fileExists(path.resolve(cwd, comp)) })));
-        console.log(selfComps);
-        
-        // 检查npm依赖是否已安装
-        //const installed = await importer(`${cwd}/package.json`);
-        //const self_task = selfdep.filter(pkg => !installed.dependencies[pkg]).map(pkg => `npm install ${pkg}`);
-        //task.push(...self_task);
+        let selfComps = await Promise.all(selfdep.map(async comp => ({ comp, exist: await fileExists(path.resolve(cwd, comp)) })));
+        // 过滤已安装的组件
+        selfComps = selfComps.filter(comp => !comp.exist).map(({ comp }) => {
+            let cli = path.resolve(_rootDir, 'bin/cli.js');
+            return { comp, cmd: `node ${cli} add ${comp}` }
+        });
+        task.push(...selfComps);
     }
 
     return task;
@@ -87,11 +93,11 @@ export async function installDependencies(component, shadcnConfig) {
     const { aliases } = shadcnConfig;
     const tasks = await dependencieTask(component, aliases);
     if (tasks.length) {
-        return installAll(tasks, ({ status, value, reason }) => {
+        return installAll(tasks, ({ status, value, reason, task }) => {
             if (status === 'fulfilled') {
-                console.log('\n', '√ 安装成功:', '\n', chalk.green(value.stdout));
+                console.log('\n', '√ 安装成功:', task.comp, '\n', chalk.green(value.stdout));
             } else {
-                console.log('\n', '× 安装失败:', '\n', chalk.red(reason));
+                console.log('\n', '× 安装失败:', task.comp, '\n', chalk.red(reason));
             }
         });
     }

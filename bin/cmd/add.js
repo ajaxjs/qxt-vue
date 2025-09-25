@@ -31,6 +31,7 @@ export async function useAdd(component) {
         
         spinner.succeed(`组件 ${component} 安装成功`);
     } catch (error) {
+        console.log('安装组件依赖失败:', error);
         spinner.fail(`安装组件 ${component} 失败: ${error.message}`);
     }
 }
