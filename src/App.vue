@@ -1,22 +1,18 @@
 <script setup>
-import HelloWorld from './components/HelloWorld.vue'
+import { Button } from '@/components/ui/button';
+import { routes } from '@/router/index'
+
 </script>
 
 <template>
-  <HelloWorld />
+  <nav class="flex gap-2 p-2 bg-amber-100">
+    <Button variant="outline" v-for="vo in routes" :key="vo.path" @click="$router.push(vo.path)">
+      {{ vo.meta.title }}
+    </Button>
+  </nav>
+  <div>
+    <router-view />
+  </div>
 </template>
 
-<style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
-}
-</style>
+<style scoped></style>

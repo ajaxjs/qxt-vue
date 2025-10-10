@@ -1,0 +1,7 @@
+{
+    "shadcn-vue": [
+        "dialog",
+        "button"
+    ],
+    "packages": []
+}
