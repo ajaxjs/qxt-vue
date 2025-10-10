@@ -30,8 +30,9 @@ const bgColor = computed(() => props.send ? '#DCF8C6' : '#FFFFFF')
     <MsgNotify v-if="type === 'notify'" v-bind="text" />
     <!-- 用户消息 -->
     <div v-else class="msg-item flex flex-row gap-x-3" :class="{ 'flex-row-reverse': send }">
-        <div>
-            <Avatar :src="avatar || ''" :class="avatarClass" />
+        <div class="avatar">
+            <slot v-if="$slots.avatar" name="avatar" v-bind="props"></slot>
+            <Avatar v-else :src="avatar || ''" :class="avatarClass" />
         </div>
         <div class="flex-1 flex flex-col max-w-full " :class="send ? 'items-end ml-10' : 'items-start mr-10'">
             <!-- 昵称 -->
@@ -45,12 +46,13 @@ const bgColor = computed(() => props.send ? '#DCF8C6' : '#FFFFFF')
                     class="absolute top-2  size-5"  :class="send ? 'left-full rotate-180' : 'right-full'">
                     <path :fill="bgColor" d="M14 12 L24 4 L24 20 Z" />
                 </svg>
-                <MsgText :type="type" :text="text" :html="html" />
+                <slot v-if="$slots.text" name="text" v-bind="props"></slot>
+                <MsgText v-else :type="type" :text="text" :html="html" />
             </div>
             <!-- 时间 -->
             <template v-if="!hideStamp">
                 <slot v-if="$slots.stamp" name="stamp" v-bind="props"></slot>
-                <div v-else-if="stamp">{{ stamp }}</div>
+                <div v-else-if="stamp" class="stamp">{{ stamp }}</div>
             </template>
         </div>
     </div>

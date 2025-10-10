@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 
 import Dialog from '../../dialog/Dialog.vue'
-import { WifiHigh } from 'lucide-vue-next';
+import { WifiHigh, CirclePlay } from 'lucide-vue-next';
 const props = defineProps({
     type: String,
     text: {},
@@ -15,8 +15,8 @@ const isPlay = ref(false)
 
 <template>
     <template v-if="type === 'audio'">
-        <div class="flex cursor-pointer" :class="{'text-red-500':isPlay}" @click="isPlay = !isPlay">
-            <WifiHigh class="rotate-90 size-6" :class="{'animate-pulse': isPlay}" />
+        <div class="flex cursor-pointer" :class="{ 'text-red-500': isPlay }" @click="isPlay = !isPlay">
+            <WifiHigh class="rotate-90 size-6" :class="{ 'animate-pulse': isPlay }" />
             <span>{{ Math.round(text.duration) }}″</span>
         </div>
         <audio :src="isPlay ? text.src : ''" :autoplay="isPlay" @ended="isPlay = false"></audio>
@@ -30,7 +30,12 @@ const isPlay = ref(false)
         </Dialog>
     </template>
     <template v-else-if="type === 'video'">
-        <video :src="text.src" controls></video>
+        <div v-if="!isPlay" class="relative" @click="isPlay = true">
+            <img :src="text.poster" class="rounded-sm" />
+            <CirclePlay class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 size-16 text-white bg-black/50 rounded-full p-2 cursor-pointer shadow-sm" />
+        </div>
+
+            <video v-else :src="isPlay ? text.src : ''" :poster="text.poster" controls autoplay class="rounded-sm"></video>
     </template>
     <template v-else>
         <span v-if="html" v-html="text"></span>
