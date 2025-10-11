@@ -1,0 +1,6 @@
+{
+    "shadcn-vue": [
+        "checkbox"
+    ],
+    "packages": []
+}

@@ -1,0 +1,19 @@
+{
+    "shadcn-vue": [
+        "checkbox",
+        "label",
+        "select",
+        "switch",
+        "radio-group",
+        "textarea",
+        "button"
+    ],
+    "packages": [],
+    "self": [
+        "input",
+        "picker",
+        "select",
+        "radio",
+        "checkbox"
+    ]
+}

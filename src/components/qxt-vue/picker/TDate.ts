@@ -169,7 +169,11 @@ export class TDate {
 	// 格式化字符串
 	formatStr: string = 'lifa YYYY-MM-DD HH:mm leap';
 	constructor(date?: any, format?: string) {
-		format = format || this.formatStr;
+		if (format) {
+			this.formatStr = format;
+		} else {
+			format = this.formatStr;
+		}
 		date = date || new Date();
 		this.setDate(date);
 	}

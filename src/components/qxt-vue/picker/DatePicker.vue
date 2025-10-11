@@ -48,10 +48,7 @@ defineExpose({
     show,
     hide,
 })
-window.addEventListener('resize', (e) => {
-    console.log('resize', e);
-    
-})
+
 </script>
 
 <template>
@@ -66,7 +63,7 @@ window.addEventListener('resize', (e) => {
             <div class="flex-1"></div>
             <Button variant="outline" class="text-primary" @click="onOk">确定</Button>
         </div>
-        <DateView ref="dateViewRef" v-model="currentDate" @change="onChange" />
+        <DateView ref="dateViewRef" v-model="currentDate" v-bind="$attrs" @change="onChange" />
     </Model>
 </template>
 

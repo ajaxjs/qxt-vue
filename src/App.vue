@@ -10,7 +10,7 @@ import { routes } from '@/router/index'
       {{ vo.meta.title }}
     </Button>
   </nav>
-  <div>
+  <div class="container mx-auto py-4">
     <router-view />
   </div>
 </template>
