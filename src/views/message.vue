@@ -11,7 +11,8 @@ const message = ref([
     text: 'hello world',
     send: true,
     avatar: 'https://crm-1251134852.cos.ap-guangzhou.myqcloud.com/avatar/random/216.png',
-    nickname: '客户1'
+    nickname: '客户1',
+    dotted: true,
 
   },
   {
@@ -26,7 +27,9 @@ const message = ref([
     type: 'image',
     text: 'https://crm-1251134852.cos.ap-guangzhou.myqcloud.com/kefu/202509/68ce5b95eb15f.png',
     avatar: 'https://crm-1251134852.cos.ap-guangzhou.myqcloud.com/avatar/random/216.png',
-    nickname: '客户1'
+    nickname: '客户1',
+    dotted: 'bg-blue-500 size-3',
+    stamp: '2025-09-20 10:00:00'
   },
   {
     type: 'audio',

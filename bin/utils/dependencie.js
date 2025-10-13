@@ -1,7 +1,7 @@
 import { exec } from 'child_process';
 import { promisify } from 'util';
 import path from 'path';
-import { pathToFileURL } from 'url';
+//import { pathToFileURL } from 'url';
 import { _qxtCompsDir, _rootDir } from './source-path.js';
 import { fileExists } from './fs-ext.js';
 import importer from './importer.js';

@@ -1,17 +1,17 @@
 import path from 'path';
-import { promises as fs } from 'fs';
-import { exec } from 'child_process';
-import { promisify } from 'util';
+//import { promises as fs } from 'fs';
+//import { exec } from 'child_process';
+//import { promisify } from 'util';
 import { _rootDir, _qxtCompsDir, _compsDir } from '../utils/source-path.js';
 import validInstall from '../utils/valid-install.js';
-import importer from '../utils/importer.js';
-import { fileExists } from '../utils/fs-ext.js';
+//import importer from '../utils/importer.js';
+//import { fileExists } from '../utils/fs-ext.js';
 import { installDependencies } from '../utils/dependencie.js';
 import { copyFolder } from '../utils/fs-ext.js';
-import chalk from 'chalk';
+//import chalk from 'chalk';
 import ora from 'ora';
 
-const execAsync = promisify(exec);
+//const execAsync = promisify(exec);
 const spinner = ora('Loading...');
 
 export async function useAdd(component) {
