@@ -9,7 +9,7 @@ const message = ref([
   {
     type: 'message',
     text: 'hello world',
-    send: true,
+    sent: true,
     avatar: 'https://crm-1251134852.cos.ap-guangzhou.myqcloud.com/avatar/random/216.png',
     nickname: '客户1',
     dotted: true,
@@ -46,7 +46,7 @@ const message = ref([
   {
     type: 'message',
     text: '秒是国际单位制中时间的基本单位，符号是s。 有时也会借用英文缩写标示为sec，惟sec于正式文书及学术上应避免使用（应直接使用s）。 秒在英文里的原始词义是计算小时的六十分',
-    send: true,
+    sent: true,
     avatar: 'https://crm-1251134852.cos.ap-guangzhou.myqcloud.com/avatar/random/216.png',
     nickname: '客户1'
 
