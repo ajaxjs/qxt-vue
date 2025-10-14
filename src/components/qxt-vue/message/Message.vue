@@ -27,7 +27,8 @@ const avatarClass = computed(() => cn('size-10', nicknameVisib.value ? 'mt-5' : 
 const bgColor = computed(() => props.sent ? '#DCF8C6' : '#FFFFFF')
 const dotClass = computed(() => {
     const dotted = typeof props.dotted === 'string' ? props.dotted : '';
-    return cn('absolute top-[50%] translate-y-[-50%] left-[100%] ml-1 bg-red-500 text-white text-xs size-2 rounded-full', dotted)
+    const pos = props.sent ? 'right-[100%] mr-1' : 'left-[100%] ml-1';
+    return cn('absolute top-[50%] translate-y-[-50%] bg-red-500 text-white text-xs size-2 rounded-full', pos, dotted)
 })
 
 </script>
