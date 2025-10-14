@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, nextTick } from 'vue'
 
 import Dialog from '../../dialog/Dialog.vue'
 import { WifiHigh, CirclePlay } from 'lucide-vue-next';
@@ -10,7 +10,11 @@ const props = defineProps({
 })
 // 播放状态
 const isPlay = ref(false)
+const emit = defineEmits(['img-loaded'])
 
+function imgLoaded(e) {
+    nextTick(() => emit('img-loaded', e))
+}
 </script>
 
 <template>
@@ -24,18 +28,19 @@ const isPlay = ref(false)
     <template v-else-if="type === 'image'">
         <Dialog>
             <template #trigger>
-                <img :src="text" class="max-w-[15em]" />
+                <img :src="text" class="max-w-[15em]" @load="imgLoaded" />
             </template>
             <img :src="text" class="max-w-full" />
         </Dialog>
     </template>
     <template v-else-if="type === 'video'">
         <div v-if="!isPlay" class="relative" @click="isPlay = true">
-            <img :src="text.poster" class="rounded-sm" />
-            <CirclePlay class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 size-16 text-white bg-black/50 rounded-full p-2 cursor-pointer shadow-sm" />
+            <img :src="text.poster" class="rounded-sm" @load="imgLoaded" />
+            <CirclePlay
+                class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 size-16 text-white bg-black/50 rounded-full p-2 cursor-pointer shadow-sm" />
         </div>
 
-            <video v-else :src="isPlay ? text.src : ''" :poster="text.poster" controls autoplay class="rounded-sm"></video>
+        <video v-else :src="isPlay ? text.src : ''" :poster="text.poster" controls autoplay class="rounded-sm"></video>
     </template>
     <template v-else>
         <span v-if="html" v-html="text"></span>

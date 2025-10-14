@@ -31,6 +31,11 @@ const dotClass = computed(() => {
     return cn('absolute top-[50%] translate-y-[-50%] bg-red-500 text-white text-xs size-2 rounded-full', pos, dotted)
 })
 
+const emit = defineEmits(['height-update'])
+
+function heightUpdate(e) {
+    emit('height-update', e)
+}
 </script>
 
 <template>
@@ -56,7 +61,7 @@ const dotClass = computed(() => {
                     <path :fill="bgColor" d="M14 12 L24 4 L24 20 Z" />
                 </svg>
                 <slot v-if="$slots.text" name="text" v-bind="props"></slot>
-                <MsgText v-else :type="type" :text="text" :html="html" />
+                <MsgText v-else :type="type" :text="text" :html="html" @img-loaded="heightUpdate" />
                 <!-- 红点标记 -->
                 <div v-if="dotted" :class="dotClass">
                 </div>

@@ -1,30 +1,45 @@
 <script setup lang="ts">
-import { routes as navList } from '@/router'
-/*
-const nav = [
+import { DropdownMenu } from '@/components/qxt-vue/dropdown-menu'
+import type { TDropdownMenuItems } from '@/components/qxt-vue/dropdown-menu/type'
+
+function onClick(e: Event) {
+    console.log('menu click', e);
+}
+const menu: TDropdownMenuItems = [
+    { label: 'Billing', shortcut: '⇧⌘P', onClick },
+    { label: 'Team', shortcut: '⌘T', onClick },
+    { label: 'Subscription', disabled: true, onClick },
     {
-        name: '首页',
-        path: '/',
+        label: 'Max Team',
+        shortcut: '⌘T',
+        submenu: {
+            label: 'Max Team',
+            items: [
+                { label: 'Max Team 1', shortcut: '⌘T', onClick },
+                { label: 'Max Team 2', shortcut: '⌘T', onClick },
+                {
+                    label: 'Max Team 3', shortcut: '⌘T',
+                    submenu: {
+                        label: 'Max Team 3',
+                        items: [
+                            { label: 'Max Team 3-1', shortcut: '⌘T', onClick },
+                            { label: 'Max Team 3-2', shortcut: '⌘T', onClick },
+                        ]
+                    }
+                },
+                { label: 'Max Team 4', shortcut: '⌘T', onClick },
+            ]
+        }
     },
-    {
-        name: '消息中心',
-        path: '/message',
-    },
-    {
-        name: '选择器',
-        path: '/picker',
-    },
-];*/
+]
 </script>
 
 <template>
     <div class="p-4">
-        <div v-for="item in navList" :key="item.path">
-            <router-link :to="item.path">{{ item.meta.title }}</router-link>
-        </div>
+        <DropdownMenu :items="menu" label="My Account">
+            <button>Open</button>
+        </DropdownMenu>
     </div>
 </template>
 
-<style lang="scss" scoped>
-
-</style>
+<style lang="scss" scoped></style>
