@@ -182,6 +182,8 @@ import Message from '@/components/qxt-vue/message/Message.vue'
 | avatar | 自定义头像内容 |
 | nickname | 自定义昵称内容 |
 | text | 自定义文本内容 |
+| before-text | 自定义消息前置内容 |
+| after-text | 自定义消息后置内容 |
 | stamp | 自定义时间戳内容 |
 
 ## 样式说明

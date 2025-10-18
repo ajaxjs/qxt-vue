@@ -56,15 +56,20 @@ function heightUpdate(e) {
             <!-- 消息 -->
             <div class="msg-box bg-white p-2 rounded-md relative drop-shadow-xs min-h-10 min-w-10"
                 :style="{ 'background-color': bgColor }">
+                <!-- 消息三角 -->
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                     class="absolute top-2  size-5" :class="sent ? 'left-full rotate-180' : 'right-full'">
                     <path :fill="bgColor" d="M14 12 L24 4 L24 20 Z" />
                 </svg>
+                <!-- 消息后置内容 -->
+                <slot name="before-text"></slot>
+                <!-- 消息内容 -->
                 <slot v-if="$slots.text" name="text" v-bind="props"></slot>
                 <MsgText v-else :type="type" :text="text" :html="html" @img-loaded="heightUpdate" />
                 <!-- 红点标记 -->
-                <div v-if="dotted" :class="dotClass">
-                </div>
+                <div v-if="dotted" :class="dotClass"></div>
+                <!-- 消息后置内容 -->
+                <slot name="after-text"></slot>
             </div>
             <!-- 时间 -->
             <template v-if="!hideStamp">
