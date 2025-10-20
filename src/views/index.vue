@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { DropdownMenu } from '@/components/qxt-vue/dropdown-menu'
-import type { TDropdownMenuItems } from '@/components/qxt-vue/dropdown-menu/type'
+import type { TDropdownMenuItems, TDropdownMenuItem } from '@/components/qxt-vue/dropdown-menu/type'
+import { ButtonGroup } from '@/components/qxt-vue/button-group'
+import { PlusIcon } from "lucide-vue-next"
+import { Button } from '@/components/ui/button'
 
 function onClick(e: Event) {
     console.log('menu click', e);
@@ -32,13 +35,39 @@ const menu: TDropdownMenuItems = [
         }
     },
 ]
+function onSelected(item: TDropdownMenuItem) {
+    console.log('selected', item.selected);
+}
 </script>
 
 <template>
     <div class="p-4">
-        <DropdownMenu :items="menu" label="My Account">
-            <button>Open</button>
-        </DropdownMenu>
+        <CardBox title="DropdownMenu" body-class="space-y-4">
+            <DropdownMenu :items="menu" label="My Account" @selected="onSelected">
+                <Button>Open</Button>
+            </DropdownMenu>
+        </CardBox>
+
+        <CardBox title="ButtonGroup" body-class="space-y-4">
+            <ButtonGroup type="primary" size="sm" variant="outline" :options="[
+                { type: 'button', label: '回复' },
+                { type: 'button', label: '删除' },
+            ]" />
+            <ButtonGroup type="primary" variant="outline" :options="[
+                { type: 'button', label: '回复' },
+                { type: 'button', label: '删除' },
+            ]" />
+            <ButtonGroup type="primary" size="lg" variant="outline" :options="[
+                { type: 'button', label: '回复' },
+                { type: 'button', label: '删除' },
+            ]" />
+            <!-- 分隔符 -->
+            <ButtonGroup type="primary" size="lg" :options="[
+                { type: 'button', label: '回复' },
+                { type: 'separator', class: 'bg-red-800' },
+                { type: 'button', label: '添加', icon: PlusIcon },
+            ]" />
+        </CardBox>
     </div>
 </template>
 

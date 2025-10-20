@@ -2,6 +2,8 @@
 import { ref } from 'vue'
 import { Button } from '@/components/ui/button'
 import { Message } from '@/components/qxt-vue/message'
+import { ButtonGroup } from '@/components/qxt-vue/button-group'
+
 //import type { Message as MessageType } from './qxt-vue/message/types'
 // 以下代码展示了 message 的类型设置方式，`message` 是一个 ref，其值为 MessageType 数组
 // 当前代码存在语法错误，缺少逗号分隔数组元素，下面进行修正

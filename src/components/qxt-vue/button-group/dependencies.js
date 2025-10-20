@@ -1,6 +1,7 @@
 {
     "shadcn-vue": [
-        "dropdown-menu"
+        "button-group",
+        "button"
     ],
     "packages": []
 }
