@@ -1,6 +1,6 @@
 {
   "name": "qxt-vue",
-  "version": "1.1.12",
+  "version": "1.1.15",
   "description": "Vue UI Lib",
   "type": "module",
   "main": "index.js",

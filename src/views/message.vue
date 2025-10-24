@@ -15,7 +15,6 @@ const message = ref([
     avatar: 'https://crm-1251134852.cos.ap-guangzhou.myqcloud.com/avatar/random/216.png',
     nickname: '客户1',
     dotted: true,
-
   },
   {
     type: 'notify',
@@ -35,13 +34,20 @@ const message = ref([
   },
   {
     type: 'audio',
-    text: { "src": "https://crm-1251134852.cos.ap-guangzhou.myqcloud.com/kefu/audio/68d10583c43c0.wav", "duration": 5.89 },
+    text: { 
+      "src": "https://crm-1251134852.cos.ap-guangzhou.myqcloud.com/kefu/audio/68d10583c43c0.wav", 
+      "duration": 5.89,
+      "content": "你好，在吗？"
+    },
     avatar: 'https://crm-1251134852.cos.ap-guangzhou.myqcloud.com/avatar/random/216.png',
     nickname: '客户1'
   },
   {
     type: 'video',
-    text: { "src": "https://cloud.video.taobao.com//play/u/14547989/p/2/e/6/t/1/259641289036.mp4", "poster": "https://shop2020-1251134852.cos.accelerate.myqcloud.com/goods/202004/1586945341560447.jpg" },
+    text: { 
+      "src": "https://cloud.video.taobao.com//play/u/14547989/p/2/e/6/t/1/259641289036.mp4", 
+      "poster": "https://shop2020-1251134852.cos.accelerate.myqcloud.com/goods/202004/1586945341560447.jpg" 
+    },
     avatar: 'https://crm-1251134852.cos.ap-guangzhou.myqcloud.com/avatar/random/216.png',
     nickname: '客户1'
   },

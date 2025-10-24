@@ -9,6 +9,8 @@ import { cn } from '@/lib/utils.js'
 const props = defineProps({
     type: String,
     text: {},
+    // 子消息标题
+    caption: String,
     avatar: String,
     nickname: String,
     stamp: String,
@@ -54,6 +56,7 @@ function heightUpdate(e) {
                 <div v-else-if="nickname" class="text-sm text-gray-500">{{ nickname }}</div>
             </template>
             <!-- 消息 -->
+            <slot name="before-text"></slot>
             <div class="msg-box bg-white p-2 rounded-md relative drop-shadow-xs min-h-10 min-w-10"
                 :style="{ 'background-color': bgColor }">
                 <!-- 消息三角 -->
@@ -62,14 +65,18 @@ function heightUpdate(e) {
                     <path :fill="bgColor" d="M14 12 L24 4 L24 20 Z" />
                 </svg>
                 <!-- 消息后置内容 -->
-                <slot name="before-text"></slot>
+                <slot name="prepend-text"></slot>
                 <!-- 消息内容 -->
                 <slot v-if="$slots.text" name="text" v-bind="props"></slot>
-                <MsgText v-else :type="type" :text="text" :html="html" @img-loaded="heightUpdate" />
+                <MsgText v-else :type="type" :text="text" :html="html" :sent="sent" @img-loaded="heightUpdate" />
                 <!-- 红点标记 -->
                 <div v-if="dotted" :class="dotClass"></div>
                 <!-- 消息后置内容 -->
-                <slot name="after-text"></slot>
+                <slot name="append-text"></slot>
+            </div>
+            <div v-if="(type === 'audio' && text?.content) || caption"
+                class="bg-gray-50 text-gray-500 rounded-sm px-2 py-1">
+                {{ text.content || caption }}
             </div>
             <!-- 时间 -->
             <template v-if="!hideStamp">
