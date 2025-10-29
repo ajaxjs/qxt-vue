@@ -38,6 +38,15 @@ const emit = defineEmits(['height-update'])
 function heightUpdate(e) {
     emit('height-update', e)
 }
+const caption = computed(() => {
+    const { caption, text } = props;
+    if (caption) {
+        return caption
+    } else if (props.type === 'audio' && text.showcap) {
+        return text.content
+    }
+    return undefined;
+})
 </script>
 
 <template>
@@ -74,9 +83,8 @@ function heightUpdate(e) {
                 <!-- 消息后置内容 -->
                 <slot name="append-text"></slot>
             </div>
-            <div v-if="(type === 'audio' && text?.content) || caption"
-                class="bg-gray-50 text-gray-500 rounded-sm px-2 py-1">
-                {{ text.content || caption }}
+            <div v-if="caption" class="bg-gray-50 text-gray-500 rounded-sm px-2 py-1">
+                {{ caption }}
             </div>
             <!-- 时间 -->
             <template v-if="!hideStamp">

@@ -1,5 +1,5 @@
 <script setup>
-import { ref, nextTick } from 'vue'
+import { ref, useTemplateRef, nextTick } from 'vue'
 
 import Dialog from '../../dialog/Dialog.vue'
 import { WifiHigh, CirclePlay, LoaderCircle } from 'lucide-vue-next';
@@ -11,26 +11,29 @@ const props = defineProps({
 })
 // 播放状态
 const isPlay = ref(false)
+const audioRef = useTemplateRef('audioRef')
 const emit = defineEmits(['img-loaded'])
 
 function imgLoaded(e) {
     nextTick(() => emit('img-loaded', e))
 }
 // 播放时间更新
-const loadAudio = ref(false)
 const playTime = ref(0)
+const canplay = ref(false)
 function onClickPlay() {
     if (isPlay.value) {
-        playEnd()
+        audioRef.value?.pause();
     } else {
-        isPlay.value = true
-        loadAudio.value = true
+        audioRef.value?.play()
     }
 }
 function onUpdateTime(e) {
     playTime.value = e.target.currentTime
 }
-function playEnd() {
+function onPlay() {
+    isPlay.value = true
+}
+function onPlayEnd() {
     isPlay.value = false;
     playTime.value = 0;
 }
@@ -43,7 +46,7 @@ function playEnd() {
             <WifiHigh class="rotate-90 size-6" :class="{ 'animate-pulse': isPlay, 'rotate-z-[180deg]': sent }" />
             <span>{{ Math.round((text?.duration || 0) - playTime) }}″</span>
         </div>
-        <audio :src="isPlay ? text.src : ''" :autoplay="isPlay" @ended="playEnd" @timeupdate="onUpdateTime"></audio>
+        <audio ref="audioRef" :src="text.src" @play="onPlay" @ended="onPlayEnd" @timeupdate="onUpdateTime"></audio>
     </template>
     <template v-else-if="type === 'image'">
         <Dialog>

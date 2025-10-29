@@ -37,7 +37,8 @@ const message = ref([
     text: { 
       "src": "https://crm-1251134852.cos.ap-guangzhou.myqcloud.com/kefu/audio/68d10583c43c0.wav", 
       "duration": 5.89,
-      "content": "你好，在吗？"
+      "content": "你好，在吗？",
+      "showcap": true
     },
     avatar: 'https://crm-1251134852.cos.ap-guangzhou.myqcloud.com/avatar/random/216.png',
     nickname: '客户1'
