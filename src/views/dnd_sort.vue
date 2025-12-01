@@ -1,7 +1,10 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, toRaw } from 'vue';
 import DndRoot from '@/components/qxt-vue/dnd-sortable/DndRoot.vue';
 import DndItem from '@/components/qxt-vue/dnd-sortable/DndItem.vue';
+import DndSort from '@/components/qxt-vue/dnd-sortable/DndSort.vue';
+
+
 
 // DndRoot组件引用
 const dndRoot1 = ref();
@@ -30,6 +33,12 @@ const list3 = ref([
     { id: 'b', title: '特殊项目 B', description: '这个项目只能在相同dnd-id的容器中拖拽' },
 ]);
 
+const tree = ref([
+    { id: 1, title: '树级1', children: toRaw(list1.value) },
+    { id: 2, title: '树级2', children: toRaw(list2.value) },
+    { id: 3, title: '树级3', children: toRaw(list3.value) },
+])
+
 // 更新列表数据
 const handleChange = (dndBus: any) => {
     console.log('更新列表数据:', dndBus);
@@ -40,6 +49,17 @@ const handleChange = (dndBus: any) => {
 <template>
     <div class="dnd-demo max-w-4xl mx-auto">
         <h1 class="demo-title">拖拽排序功能演示</h1>
+
+        <div>
+            <DndSort :data="tree">
+                <template #default="{ item }">
+                    <div class="item-content">
+                        <div class="item-title">{{ item.title }}</div>
+                        <div class="item-description">{{ item.description }}</div>
+                    </div>
+                </template>
+            </DndSort>
+        </div>
 
         <div class="demo-description">
             <p>以下是两个可以相互拖拽的容器（使用相同的 dnd-id）：</p>

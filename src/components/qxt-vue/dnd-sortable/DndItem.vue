@@ -18,7 +18,7 @@ onMounted(() => {
 
 <template>
     <div ref="itemRef" draggable="true" class="dnd-item">
-        <slot></slot>
+        <slot :item="item"></slot>
     </div>
 </template>
 
