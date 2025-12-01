@@ -89,7 +89,8 @@ const pickerRef = ref()
             <template v-if="['datetime', 'date'].includes(type!)">
                 <Input :wrap-class="inputClass" v-bind="inputAttrs">
                 <template #input>
-                    <div class="input flex-1 flex items-center" :placeholder @click="pickerRef.show()">{{ modelValue }}
+                    <div class="input flex-1 flex items-center" :placeholder @click="pickerRef.show()">
+                        {{ modelValue }}
                     </div>
                 </template>
                 <template #after>

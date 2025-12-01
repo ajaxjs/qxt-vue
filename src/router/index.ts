@@ -5,6 +5,7 @@ export const routes = [
     { path: '/message', component: () => import('@/views/message.vue'), meta: { title: '消息' } },
     { path: '/picker', component: () => import('@/views/picker.vue'), meta: { title: '选择器' } },
     { path: '/form', component: () => import('@/views/form.vue'), meta: { title: '表单' } },
+    { path: '/dnd_sort', component: () => import('@/views/dnd_sort.vue'), meta: { title: '拖拽排序' } },
 ]
 
 const router = createRouter({

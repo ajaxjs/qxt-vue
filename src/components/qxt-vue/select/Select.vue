@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import type { HTMLAttributes } from "vue"
 import {
     Select,
     SelectContent,
@@ -10,19 +9,9 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 import { cn } from "@/lib/utils"
+import type { SelectOptions } from "./type"
 
-type IOption = {
-    type?: 'label' | 'item',
-    label: string,
-    value: string,
-}
-type ISelect = {
-    label: string,
-    options: IOption[],
-    class?: HTMLAttributes["class"],
-}
-
-const props = defineProps<ISelect>()
+const props = defineProps<SelectOptions>()
 
 const modelValue = defineModel<string | number>()
 
@@ -31,12 +20,12 @@ const modelValue = defineModel<string | number>()
 
 <template>
     <Select v-model="modelValue">
-        <SelectTrigger :class="cn('min-w-[180px]', props.class)">
-            <SelectValue :placeholder="label" />
+        <SelectTrigger :class="cn('min-w-[8em]', props.class)">
+            <SelectValue :placeholder="props.label" />
         </SelectTrigger>
         <SelectContent>
             <SelectGroup>
-                <template v-for="(vo) in options" :key="vo.value">
+                <template v-for="(vo) in props.options" :key="vo.value">
                     <SelectLabel v-if="vo.type == 'label'">{{ vo.label }}</SelectLabel>
                     <SelectItem v-else :value="vo.value">
                         {{ vo.label }}

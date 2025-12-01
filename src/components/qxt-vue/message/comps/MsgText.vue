@@ -51,7 +51,7 @@ function onPlayEnd() {
     <template v-else-if="type === 'image'">
         <Dialog>
             <template #trigger>
-                <img :src="text?.src || text" class="max-w-[15em]" @load="imgLoaded" />
+                <img :src="text?.src || text" class="w-full max-w-[15em]" @load="imgLoaded" />
             </template>
             <img :src="text?.src || text" class="max-w-full" />
         </Dialog>
