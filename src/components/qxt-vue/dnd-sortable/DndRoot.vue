@@ -1,12 +1,16 @@
 <script setup lang="ts">
-import { nextTick, useTemplateRef, useId } from 'vue';
+import { nextTick, useTemplateRef, useId, provide, onMounted, onUnmounted } from 'vue';
 import { useDndBus } from './dnd-hooks';
 
+
 const props = defineProps({
-    dndId: String
+    dndId: String,
+    data: Object,
 });
+const emit = defineEmits(['update', 'change']);
 
 const dndName = props.dndId || useId();
+provide('dnd-name', dndName);
 
 // Dnd总线
 const dndBus = useDndBus(dndName);
@@ -14,52 +18,105 @@ const dndBus = useDndBus(dndName);
 // DndRoot
 const fromRoot = useTemplateRef('rootRef');
 
-// Start
+onMounted(() => {
+    if (!fromRoot.value) return;
+    if (!Array.from(fromRoot.value.children).find(item => item.classList.contains('dnd-item'))) {
+        return console.error('DndRoot 只能包含 DndItem 组件', fromRoot.value);
+    }
+
+    dndBus.rootData.set(fromRoot.value, props.data);
+    const computedStyle = getComputedStyle(fromRoot.value);
+    const display = computedStyle.getPropertyValue('display');
+    const direction = computedStyle.getPropertyValue('flex-direction');
+    if (display === 'flex' && direction === 'row') {
+        dndBus.direction = 'horizontal';
+    } else {
+        dndBus.direction = 'vertical';
+    }
+})
+onUnmounted(() => {
+    dndBus.reset();
+})
+
+/**
+ * 处理占位符位置
+ * @param e 拖动事件
+ */
+function handlePlaceholder(e: DragEvent) {
+    const target = (e.target as HTMLElement).closest('.dnd-item') as HTMLElement;
+    const { x: _x, y: _y } = e;
+    const { left, top, width, height } = target.getBoundingClientRect();
+    //console.log(left, top, width, height);
+    if (dndBus.direction === 'horizontal') {
+        dndBus.toBefore = _x < left + width / 2;
+    } else {
+        dndBus.toBefore = _y < top + height / 2;
+    }
+    // 插入目标占位符
+    if (dndBus.toBefore) {
+        if (dndBus.toItem.previousSibling === dndBus.separator) return;
+        dndBus.toRoot.insertBefore(dndBus.separator, dndBus.toItem)
+    } else {
+        if (dndBus.toItem.nextSibling === dndBus.separator) return;
+        dndBus.toRoot.insertBefore(dndBus.separator, dndBus.toItem.nextSibling);
+    }
+    emit('update', dndBus.detail);
+}
+
+// Start---
 const handleDragStart = (e: DragEvent) => {
     if (!fromRoot.value || !e.dataTransfer) return;
     e.dataTransfer.effectAllowed = 'move';
-    dndBus.fromItem = e.target as HTMLElement;
-    nextTick(() => dndBus.fromItem.classList.add('dragging'))
+    const target = e.target as HTMLElement;
+    dndBus.fromItem = target;
+    nextTick(() => target.classList.add('dragging'))
 }
 // Enter
 const handleDragEnter = (e: DragEvent) => {
+    e.preventDefault();
     const target = (e.target as HTMLElement).closest('.dnd-item') as HTMLElement;
-    console.log('-enter',e);
-    
-    if (!target || dndBus.fromItem === target || target === dndBus.toItem) return;
-    if (dndName !== dndBus.dndName) return;
+    // 忽略：不同组、相同元素、拖动元素
+    if (!dndBus.fromRoot || !target || dndBus.fromItem === target || target === dndBus.toItem) return;
+
     dndBus.toItem = target;
+    handlePlaceholder(e);
 }
 // Over
 const handleDragOver = (e: DragEvent) => {
     // 不同组
-    if (!dndBus.fromItem) return;
+    if (!dndBus.fromRoot) return;
     e.preventDefault();
     const target = (e.target as HTMLElement).closest('.dnd-item') as HTMLElement;
     if (dndBus.fromItem === target || !target) return;
-
-    if (dndBus.toIndex > dndBus.fromIndex) {
-        dndBus.toRoot.insertBefore(dndBus.fromItem, dndBus.toItem.nextSibling);
-    } else {
-        dndBus.toRoot.insertBefore(dndBus.fromItem, dndBus.toItem);
-    }
+    handlePlaceholder(e);
 }
 // Leave
 const handleDragLeave = (e: DragEvent) => {
     e.preventDefault();
-    if (!e.target) dndBus.toItem = null;
+    const target = (e.target as HTMLElement)
+    if (target.classList.contains('dnd-root')) {
+        dndBus.separator.remove();
+    }
 }
 // Drop
 const handleDrop = (e: DragEvent) => {
     e.preventDefault();
-    console.log('1----drop', dndBus.fromIndex, dndBus.toIndex);
+    const toIndex = dndBus.toBefore ? dndBus.toIndex - 2 : dndBus.toIndex + 2;
+    // 不能插入到自己的位置
+    if (!dndBus.toItem || (toIndex === dndBus.fromIndex && dndBus.fromRoot === dndBus.toRoot)) return;
+
+    if (dndBus.toBefore) {
+        dndBus.toRoot.insertBefore(dndBus.fromItem, dndBus.toItem)
+    } else {
+        dndBus.toRoot.insertBefore(dndBus.fromItem, dndBus.toItem.nextSibling);
+    }
+    emit('change', dndBus.detail);
 }
 // End
 const handleDragEnd = (e: DragEvent) => {
     e.preventDefault();
-    if (!dndBus.fromItem) return;
     dndBus.fromItem.classList.remove('dragging');
-    dndBus.fromItem = null;
+    dndBus.reset();
 }
 </script>
 
@@ -71,6 +128,33 @@ const handleDragEnd = (e: DragEvent) => {
 </template>
 
 <style lang="scss" scoped>
+.dnd-placeholder {
+    position: relative;
+    display: none;
+
+    &.vertical::before,
+    &.horizontal::before {
+        content: '';
+        background-color: blue;
+        position: absolute;
+        box-shadow: 0 0 5px blue;
+        top: 0;
+        left: 0;
+        transform: translateY(-1px);
+        border-radius: 2px;
+    }
+
+    &.vertical::before {
+        width: 100%;
+        height: 2px;
+    }
+
+    &.horizontal::before {
+        width: 2px;
+        height: 100%;
+    }
+}
+
 .list-move {
     transition: transform .3s ease;
 }
