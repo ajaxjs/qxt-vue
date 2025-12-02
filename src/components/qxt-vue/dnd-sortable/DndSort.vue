@@ -10,9 +10,10 @@ type TreeNode = {
 type ITreeProps = {
     data: TreeNode[],
     dndId?: string,
+    depth?: number,
 }
-const props = defineProps<ITreeProps>()
-const dndName = ref(props.dndId) || useId();
+const { dndId, depth = 0 } = defineProps<ITreeProps>()
+const dndName = ref(dndId || useId());
 
 
 interface DndSlotProps {
@@ -24,10 +25,10 @@ defineSlots<{
 </script>
 
 <template>
-    <DndRoot :dnd-id="dndName">
-        <DndItem v-for="(group, i) in props.data" :key="i" :item="group">
-            <slot :item="group"></slot>
-            <DndSort v-if="Array.isArray(group.children)" :data="group.children" :dnd-id="dndName">
+    <DndRoot :dnd-id="dndName" :depth="depth" :data="data">
+        <DndItem v-for="(item, i) in data" :key="i" :item="item">
+            <slot :item="item"></slot>
+            <DndSort v-if="Array.isArray(item.children)" :data="item.children" :dnd-id="dndName" :depth="depth + 1">
                 <template #default="prop">
                     <slot :item="prop.item"></slot>
                 </template>

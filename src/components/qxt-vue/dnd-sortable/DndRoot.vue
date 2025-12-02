@@ -9,6 +9,7 @@ const props = defineProps({
 });
 const emit = defineEmits(['update', 'change']);
 
+const itemKey = useId();
 const dndName = props.dndId || useId();
 provide('dnd-name', dndName);
 
@@ -24,7 +25,8 @@ onMounted(() => {
         return console.error('DndRoot 只能包含 DndItem 组件', fromRoot.value);
     }
 
-    dndBus.rootData.set(fromRoot.value, props.data);
+    //dndBus.rootData.set(fromRoot.value, props.data);
+    dndBus.rootData.set(itemKey, props.data);
     const computedStyle = getComputedStyle(fromRoot.value);
     const display = computedStyle.getPropertyValue('display');
     const direction = computedStyle.getPropertyValue('flex-direction');
@@ -43,9 +45,19 @@ onUnmounted(() => {
  * @param e 拖动事件
  */
 function handlePlaceholder(e: DragEvent) {
-    const target = (e.target as HTMLElement).closest('.dnd-item') as HTMLElement;
+    const target = e.target as HTMLElement;
+    const dndItem = target.closest('.dnd-item') as HTMLElement;
+    if (target && target.classList.contains('dnd-root')) {
+        e.stopPropagation();
+        return;
+    }
+    // 忽略：拖动元素包含目标元素
+    if (dndBus.fromItem.contains(dndItem)) return;
+
+    dndBus.toItem = dndItem;
+
     const { x: _x, y: _y } = e;
-    const { left, top, width, height } = target.getBoundingClientRect();
+    const { left, top, width, height } = dndItem.getBoundingClientRect();
     //console.log(left, top, width, height);
     if (dndBus.direction === 'horizontal') {
         dndBus.toBefore = _x < left + width / 2;
@@ -66,63 +78,81 @@ function handlePlaceholder(e: DragEvent) {
 // Start---
 const handleDragStart = (e: DragEvent) => {
     if (!fromRoot.value || !e.dataTransfer) return;
+    e.stopPropagation();
     e.dataTransfer.effectAllowed = 'move';
     const target = e.target as HTMLElement;
-    dndBus.fromItem = target;
-    nextTick(() => target.classList.add('dragging'))
+    dndBus.fromItem = target.classList.contains('dnd-item') ? target : target.closest('.dnd-item') as HTMLElement;
+
+    nextTick(() => dndBus.fromItem?.classList.add('dragging'))
 }
 // Enter
 const handleDragEnter = (e: DragEvent) => {
     e.preventDefault();
-    const target = (e.target as HTMLElement).closest('.dnd-item') as HTMLElement;
+    const target = e.target as HTMLElement;
+    const dndItem = target.closest('.dnd-item') as HTMLElement;
     // 忽略：不同组、相同元素、拖动元素
-    if (!dndBus.fromRoot || !target || dndBus.fromItem === target || target === dndBus.toItem) return;
+    if (!dndBus.fromRoot || !dndItem || dndBus.fromItem === dndItem || dndItem === dndBus.toItem) return;
 
-    dndBus.toItem = target;
     handlePlaceholder(e);
+
 }
 // Over
 const handleDragOver = (e: DragEvent) => {
     // 不同组
     if (!dndBus.fromRoot) return;
     e.preventDefault();
-    const target = (e.target as HTMLElement).closest('.dnd-item') as HTMLElement;
-    if (dndBus.fromItem === target || !target) return;
+    const target = e.target as HTMLElement;
+    const dndItem = target.closest('.dnd-item') as HTMLElement;
+    if (dndBus.fromItem === dndItem || !dndItem) return;
     handlePlaceholder(e);
 }
 // Leave
 const handleDragLeave = (e: DragEvent) => {
     e.preventDefault();
-    const target = (e.target as HTMLElement)
-    if (target.classList.contains('dnd-root')) {
+    const target = e.target as HTMLElement;
+    const dndItem = target.closest('.dnd-item') as HTMLElement;
+    if (!dndItem || dndItem?.classList.contains('dnd-root')) {
         dndBus.separator.remove();
     }
 }
 // Drop
 const handleDrop = (e: DragEvent) => {
+    if (dndBus.fromItem && dndBus.fromItem.contains(dndBus.toItem)) return;
     e.preventDefault();
-    const toIndex = dndBus.toBefore ? dndBus.toIndex - 2 : dndBus.toIndex + 2;
+    const { from, to } = dndBus.detail;
+
     // 不能插入到自己的位置
-    if (!dndBus.toItem || (toIndex === dndBus.fromIndex && dndBus.fromRoot === dndBus.toRoot)) return;
+    if (!dndBus.toItem || (from.index === to.index && from.root === to.root)) return;
 
     if (dndBus.toBefore) {
         dndBus.toRoot.insertBefore(dndBus.fromItem, dndBus.toItem)
     } else {
         dndBus.toRoot.insertBefore(dndBus.fromItem, dndBus.toItem.nextSibling);
     }
+    // console.log('-from:', from);
+    // console.log('-to:', to);
+    // 操作数据
+    //to.rootData.splice(to.index + 1, 0, from.itemData);
+    //from.rootData.splice(from.index, 1);    
+    
+    
     emit('change', dndBus.detail);
+    e.stopPropagation();
 }
 // End
 const handleDragEnd = (e: DragEvent) => {
     e.preventDefault();
-    dndBus.fromItem.classList.remove('dragging');
+    dndBus.fromItem?.classList.remove('dragging');
     dndBus.reset();
 }
+
+const handleMouseUp = () => dndBus.reset();
 </script>
 
 <template>
-    <div ref="rootRef" class="dnd-root" @dragstart="handleDragStart" @dragenter="handleDragEnter"
-        @dragover="handleDragOver" @dragleave="handleDragLeave" @drop="handleDrop" @dragend="handleDragEnd">
+    <div ref="rootRef" class="dnd-root" :data-key="itemKey" @dragstart="handleDragStart" @dragenter="handleDragEnter"
+        @dragover="handleDragOver" @dragleave="handleDragLeave" @drop="handleDrop" @dragend="handleDragEnd"
+        @mouseup="handleMouseUp">
         <slot></slot>
     </div>
 </template>

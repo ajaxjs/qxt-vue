@@ -50,15 +50,20 @@ const handleChange = (dndBus: any) => {
     <div class="dnd-demo max-w-4xl mx-auto">
         <h1 class="demo-title">拖拽排序功能演示</h1>
 
-        <div>
-            <DndSort :data="tree">
-                <template #default="{ item }">
-                    <div class="item-content">
-                        <div class="item-title">{{ item.title }}</div>
-                        <div class="item-description">{{ item.description }}</div>
-                    </div>
-                </template>
-            </DndSort>
+        <div class="flex gap-3">
+            <div class="flex-1">
+                <DndSort :data="tree">
+                    <template #default="{ item }">
+                        <div class="item-content">
+                            <div class="item-title">{{ item.title }}</div>
+                            <div class="item-description">{{ item.description }}</div>
+                        </div>
+                    </template>
+                </DndSort>
+            </div>
+            <div class="flex-1">
+                <pre>{{ tree }}</pre>
+            </div>
         </div>
 
         <div class="demo-description">
