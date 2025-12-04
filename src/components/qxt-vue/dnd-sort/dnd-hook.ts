@@ -69,7 +69,8 @@ export function useIitemDom(this: DndBus, target: HTMLElement): IItem {
     const listId = root.getAttribute('list-id');
     const direction = getRootDir(root);
     const path = [...this.pathMap.get(listId) || [], index];
-    return { target, item, root, index, itemList, listId, direction, path };
+    const data = this.listMap.get(listId)?.[index];
+    return { target, item, root, index, itemList, listId, direction, path, data };
 }
 
 // 获取根容器方向

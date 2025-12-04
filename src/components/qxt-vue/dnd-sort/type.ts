@@ -3,6 +3,7 @@ export type IItem = {
     root: HTMLElement;
     target: HTMLElement;
     item: HTMLElement;
+    data: any;
     path: number[];
     index: number;
     itemList: HTMLElement[];

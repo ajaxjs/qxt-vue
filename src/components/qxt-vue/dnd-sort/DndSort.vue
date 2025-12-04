@@ -7,6 +7,7 @@ import DndItem from './DndItem.vue'
 interface IDndRootProps {
     dndName?: string;
     dndPath?: number[];
+    childKey?: string;
 }
 const props = defineProps<IDndRootProps>();
 const emit = defineEmits(['change']);
@@ -16,6 +17,7 @@ const rootId = useId();
 const dndName = props.dndName || rootId;
 const dndPath = props.dndPath || [];
 const dndBus = useDndBus(dndName);
+const childKey = props.childKey || 'children';
 //dndBus.listMap.set(rootId, list.value);
 
 onUnmounted(() => dndBus.destroy())
@@ -34,9 +36,12 @@ defineSlots<{
 
 <template>
     <DndRoot v-model="list" :dnd-name="dndName" :_root-id="rootId" :dnd-path="dndPath" @change="handleChange">
+        <template #header="{ item }">
+            <slot :item="item"></slot>
+        </template>
         <DndItem v-for="(item, i) in list" :key="i" :item="item" :data-key="i" :dnd-name="dndName">
             <slot :item="item"></slot>
-            <DndSort v-if="Array.isArray(item.children)" v-model="item.children" :dnd-name="dndName"
+            <DndSort v-if="Array.isArray(item[childKey])" v-model="item[childKey]" :dnd-name="dndName"
                 :dnd-path="[...dndPath, i]" @change="handleChange">
                 <template #default="{ item }">
                     <slot :item="item"></slot>

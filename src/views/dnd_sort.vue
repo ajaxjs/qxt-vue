@@ -2,7 +2,6 @@
 import { ref, toRaw } from 'vue'
 import DndSort from '@/components/qxt-vue/dnd-sort/DndSort.vue'
 import type { IChangeResult } from '@/components/qxt-vue/dnd-sort/type'
-import { isBefore } from 'node_modules/reka-ui/dist/index2';
 
 const children = [
     { id: '6', title: '项目 C1', description: '这是第六个可拖拽项目' },
@@ -40,6 +39,10 @@ const tree = ref([
 const planTree = toRaw(list1.value);
 
 const handleChange = (detail: IChangeResult) => {
+    console.log('change:', detail);
+}
+
+const handleSort = (detail: IChangeResult) => {
     const { from, over, isBefore, isUp, toPath } = detail;
     if (isBefore) {
         over.root.insertBefore(from.item, over.item);
@@ -57,7 +60,7 @@ const handleChange = (detail: IChangeResult) => {
     <div>响应式数据排序</div>
     <div class="flex gap-3">
         <div class="w-2/3">
-            <DndSort v-model="tree">
+            <DndSort v-model="tree" @change="handleChange">
                 <template #default="{ item }">
                     <div class="item p-2 border border-gray-300 rounded-md">
                         <h3 class="text-lg font-bold">{{ item.title }}</h3>
@@ -75,7 +78,7 @@ const handleChange = (detail: IChangeResult) => {
 
     <div class="mt-3">
         <div>非响应式数据排序(Dom排序)</div>
-        <DndSort v-model="planTree" @change="handleChange">
+        <DndSort v-model="planTree" @change="handleSort">
             <template #default="{ item }">
                 <div class="item p-2 border border-gray-300 rounded-md">
                     <h3 class="text-lg font-bold">{{ item.title }}</h3>
