@@ -9,6 +9,7 @@ export type IItem = {
     itemList: HTMLElement[];
     listId: string | null;
     direction: 'horizontal' | 'vertical';
+    reverse: boolean;
 }
 
 export type IChangeResult = {

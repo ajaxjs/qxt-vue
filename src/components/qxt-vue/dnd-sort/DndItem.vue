@@ -14,7 +14,7 @@ const { item } = defineProps<DndItemProps>();
 </script>
 
 <template>
-    <div :id="item.id" class="dnd-item" draggable="true">
+    <div class="dnd-item" draggable="true">
         <slot :item="item" />
     </div>
 </template>

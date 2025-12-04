@@ -1,13 +1,17 @@
 <script setup lang="ts">
-import { onUnmounted, useId } from 'vue';
+import { computed, onUnmounted, useId } from 'vue';
 import { useDndBus } from './dnd-hook';
 import DndRoot from './DndRoot.vue'
 import DndItem from './DndItem.vue'
 
-interface IDndRootProps {
+type IDndRootProps = {
     dndName?: string;
     dndPath?: number[];
     childKey?: string;
+    noSort?: boolean;
+    rootClass?: string;
+    separatorClass?: string;
+    separatorStyle?: string;
 }
 const props = defineProps<IDndRootProps>();
 const emit = defineEmits(['change']);
@@ -18,7 +22,18 @@ const dndName = props.dndName || rootId;
 const dndPath = props.dndPath || [];
 const dndBus = useDndBus(dndName);
 const childKey = props.childKey || 'children';
-//dndBus.listMap.set(rootId, list.value);
+
+const rootAttrs = computed(() => {
+    const { noSort, rootClass, separatorStyle, separatorClass } = props;
+    return {
+        dndName,
+        dndPath,
+        noSort,
+        class: rootClass,
+        separatorClass,
+        separatorStyle,
+    }
+})
 
 onUnmounted(() => dndBus.destroy())
 
@@ -35,13 +50,10 @@ defineSlots<{
 </script>
 
 <template>
-    <DndRoot v-model="list" :dnd-name="dndName" :_root-id="rootId" :dnd-path="dndPath" @change="handleChange">
-        <template #header="{ item }">
-            <slot :item="item"></slot>
-        </template>
+    <DndRoot v-model="list" v-bind="rootAttrs" @change="handleChange">
         <DndItem v-for="(item, i) in list" :key="i" :item="item" :data-key="i" :dnd-name="dndName">
             <slot :item="item"></slot>
-            <DndSort v-if="Array.isArray(item[childKey])" v-model="item[childKey]" :dnd-name="dndName"
+            <DndSort v-if="Array.isArray(item[childKey])" v-model="item[childKey]" v-bind="rootAttrs"
                 :dnd-path="[...dndPath, i]" @change="handleChange">
                 <template #default="{ item }">
                     <slot :item="item"></slot>
