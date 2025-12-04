@@ -1,12 +1,19 @@
 <script setup lang="ts">
 import { ref, toRaw } from 'vue'
 import DndSort from '@/components/qxt-vue/dnd-sort/DndSort.vue'
+import type { IChangeResult } from '@/components/qxt-vue/dnd-sort/type'
+import { isBefore } from 'node_modules/reka-ui/dist/index2';
 
+const children = [
+    { id: '6', title: '项目 C1', description: '这是第六个可拖拽项目' },
+    { id: '7', title: '项目 C2', description: '这是第七个可拖拽项目' },
+    { id: '8', title: '项目 C3', description: '这是第八个可拖拽项目' },
+];
 // 第一个列表数据
 const list1 = ref([
     { id: '1', title: '项目 A1', description: '这是第一个可拖拽项目' },
     { id: '2', title: '项目 A2', description: '这是第二个可拖拽项目' },
-    { id: '3', title: '项目 A3', description: '这是第三个可拖拽项目' },
+    { id: '3', title: '项目 A3', description: '这是第三个可拖拽项目', children },
     { id: '4', title: '项目 A4', description: '这是第四个可拖拽项目' },
     { id: '5', title: '项目 A5', description: '这是第五个可拖拽项目' },
 ]);
@@ -29,9 +36,25 @@ const tree = ref([
     { id: 2, title: '+ 树级2', children: toRaw(list2.value) },
     { id: 3, title: '+ 树级3', children: toRaw(list3.value) },
 ])
+
+const planTree = toRaw(list1.value);
+
+const handleChange = (detail: IChangeResult) => {
+    const { from, over, isBefore, isUp, toPath } = detail;
+    if (isBefore) {
+        over.root.insertBefore(from.item, over.item);
+    } else {
+        over.root.insertBefore(from.item, over.item.nextSibling);
+    }
+    console.log(from.path.join(' -> '), isUp ? '上移' : '下移', '到', toPath.join(' -> '), isBefore ? '前' : '后');
+
+    console.log('sort change:', detail);
+}
+
 </script>
 
 <template>
+    <div>响应式数据排序</div>
     <div class="flex gap-3">
         <div class="w-2/3">
             <DndSort v-model="tree">
@@ -51,7 +74,8 @@ const tree = ref([
     </div>
 
     <div class="mt-3">
-        <DndSort v-model="list1">
+        <div>非响应式数据排序(Dom排序)</div>
+        <DndSort v-model="planTree" @change="handleChange">
             <template #default="{ item }">
                 <div class="item p-2 border border-gray-300 rounded-md">
                     <h3 class="text-lg font-bold">{{ item.title }}</h3>
@@ -66,10 +90,12 @@ const tree = ref([
 .dnd-root {
     padding-left: 20px;
 }
+
 .dnd-root .dragging {
     opacity: 0.5;
 }
-.dragging-over > .item {
+
+.dragging-over>.item {
     background-color: #86bbff !important;
 }
 </style>

@@ -2,20 +2,24 @@
 import { useDndBus } from './dnd-hook';
 //import { ref } from 'vue';
 import { nextTick, useId } from 'vue';
+import type { IChangeResult } from './type'
 
 type IDndRootProps = {
     dndName: string;
+    dndPath: number[];
 }
 const props = defineProps<IDndRootProps>()
+const emit = defineEmits(['change']);
 
 const listId = useId();
 const dndBus = useDndBus(props.dndName);
+const dndPath = props.dndPath || [];
+
+
 const list = defineModel<any[]>();
 // 列表映射
 dndBus.listMap.set(listId, list.value);
-
-console.log(dndBus.listMap);
-
+dndBus.pathMap.set(listId, dndPath);
 
 // 事件元素
 const useEventElm = (e: DragEvent) => {
@@ -48,8 +52,8 @@ const isBefore = (e: DragEvent) => {
 
 const handleMoveItem = (e: DragEvent) => {
     if (!dndBus.over) return;
-    dndBus.overBefore = isBefore(e);
-    const { over, separator, overBefore } = dndBus;
+    const overBefore = isBefore(e);
+    const { over, separator } = dndBus;
     if (overBefore) {
         if (over.item.previousSibling === separator) return;
         over.root.insertBefore(separator, over.item)
@@ -105,17 +109,27 @@ const handleDrop = (e: DragEvent) => {
     if (!from || !over) return;
     const formList = dndBus.listMap.get(from.listId);
     const toList = dndBus.listMap.get(over?.listId);
-    console.log('from:', formList, 'over:', toList);
+    const isbefore = isBefore(e);
+    const isUp = over.index < from.index;
+    let toIndex = over.index + (isbefore ? (isUp ? 0 : -1) : (isUp ? 1 : 0));
+    dndBus.index = toIndex;
+    const toPath = [...props.dndPath, toIndex];
+    // 未改变位置
+    if (from.index === toIndex) return;
 
     const fromData = formList.splice(from.index, 1);
-    toList.splice(over.index, 0, ...fromData);
+    toList.splice(toIndex, 0, ...fromData);
     dndBus.removeSeparator();
+    const detail: IChangeResult = { from, over, toPath, toIndex, isBefore: isbefore, isUp };
+    emit('change', detail);
+
+    //e.detail = detail;
 }
 const handleDragEnd = (e: DragEvent) => {
     e.preventDefault();
     dndBus.from?.item.classList.remove('dragging')
     dndBus.reset();
-    console.log('4-DragEnd:', props.dndName);
+    // console.log('4-DragEnd:', props.dndName);
 
 }
 
