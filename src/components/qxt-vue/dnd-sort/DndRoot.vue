@@ -34,7 +34,7 @@ const useEventElm = (e: DragEvent) => {
 };
 
 // 判断是否在目标元素之前
-const isBefore = (e: DragEvent) => {
+const getIsBefore = (e: DragEvent) => {
     const { dndItem, dndRoot } = useEventElm(e);
     const dir = getRootDir(dndRoot);
     const { x: _x, y: _y } = e;
@@ -53,7 +53,7 @@ const isBefore = (e: DragEvent) => {
 
 const handleMoveItem = (e: DragEvent) => {
     if (!dndBus.over) return;
-    const overBefore = isBefore(e);
+    const overBefore = getIsBefore(e);
 
     const { over, separator } = dndBus;
     if (overBefore) {
@@ -105,20 +105,25 @@ const handleDrop = (e: DragEvent) => {
     if (!e.dataTransfer) return;
     e.preventDefault();
     e.stopPropagation();
+    dndBus.from?.item.classList.remove('dragging')
     const { dndItem } = useEventElm(e);
     dndBus.over = dndItem;
     const { from, over } = dndBus
     if (!from || !over || from.item === over.item) return;
     const formList = dndBus.listMap.get(from.listId);
     const toList = dndBus.listMap.get(over?.listId);
-    const isbefore = isBefore(e);
-    const isUp = over.index < from.index;
-    const _isUp = Number(over.item.getAttribute('global-index')) < Number(from.item.getAttribute('global-index'));
-    let toIndex = over.index + (isbefore ? (isUp ? 0 : -1) : (isUp ? 1 : 0));
-    console.log('isUp', _isUp);
+    const isBefore = getIsBefore(e);
+    const isSameRoot = from.root == over.root;
+    const isUp = Number(over.item.getAttribute('dnd-index')) < Number(from.item.getAttribute('dnd-index'));
+    let toIndex = over.index;
+    if (isSameRoot) {
+        toIndex += (isUp ? (isBefore ? 0 : 1) : (isBefore ? -1 : 0));
+    } else {
+        toIndex += (isBefore ? 0 : 1)
+    }
     // 未改变位置
-    if ((from.root==over.root && from.index === toIndex) || toIndex < 0) return;
-    
+    if ((isSameRoot && from.index === toIndex) || toIndex < 0) return;
+
 
     dndBus.index = toIndex;
     const toPath = [...props.dndPath, toIndex];
@@ -127,7 +132,7 @@ const handleDrop = (e: DragEvent) => {
         toList.splice(toIndex, 0, ...fromData);
     }
     dndBus.removeSeparator();
-    const detail: IChangeResult = { from, over, toPath, toIndex, isBefore: isbefore, isUp };
+    const detail: IChangeResult = { from, over, toPath, toIndex, isBefore, isUp };
     emit('change', detail);
 
     //e.detail = detail;
@@ -136,8 +141,6 @@ const handleDragEnd = (e: DragEvent) => {
     e.preventDefault();
     dndBus.from?.item.classList.remove('dragging')
     dndBus.reset();
-    console.log('drag end', dndBus);
-
 }
 
 
