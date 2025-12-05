@@ -50,8 +50,6 @@ const handleSort = (detail: IChangeResult) => {
         over.root.insertBefore(from.item, over.item.nextSibling);
     }
     console.log(from.path.join(' -> '), isUp ? '上移' : '下移', '到', toPath.join(' -> '), isBefore ? '前' : '后');
-
-    console.log('sort change:', detail);
 }
 
 </script>
@@ -60,7 +58,7 @@ const handleSort = (detail: IChangeResult) => {
     <div>响应式数据排序</div>
     <div class="flex gap-3">
         <div class="w-2/3">
-            <DndSort v-model="tree" root-class="flex flex-col-reverse" @change="handleChange">
+            <DndSort v-model="tree" @change="handleChange">
                 <template #default="{ item }">
                     <div class="item p-2 border border-gray-300 rounded-md">
                         <h3 class="text-lg font-bold">{{ item.title }}</h3>
