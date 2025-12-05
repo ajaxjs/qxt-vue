@@ -52,10 +52,11 @@ const getIsBefore = (e: DragEvent) => {
 }
 
 const handleMoveItem = (e: DragEvent) => {
-    if (!dndBus.over) return;
+    const { from, over, separator } = dndBus;
+    if (!from || !over || isSubset(from.item, over.item)) return;
+    
     const overBefore = getIsBefore(e);
 
-    const { over, separator } = dndBus;
     if (overBefore) {
         if (over.item.previousSibling === separator) return;
         over.root.insertBefore(separator, over.item)
@@ -78,6 +79,7 @@ const handleDragEnter = (e: DragEvent) => {
     if (!dndBus.from) return; // 不同组
     e.preventDefault();
     const { dndItem } = useEventElm(e);
+
     if (dndItem === dndBus.from.target) {
         dndBus.removeSeparator();
         return;
@@ -85,6 +87,22 @@ const handleDragEnter = (e: DragEvent) => {
     dndBus.over = dndItem;
     handleMoveItem(e)
 }
+
+function isSubset(domA: HTMLElement, domB: HTMLElement) {
+    // 排除自身（如需包含自身，可去掉这行）
+    if (domB === domA) return false;
+
+    let currentNode = domB.parentNode;
+    // 向上遍历父节点，直到根节点
+    while (currentNode) {
+        if (currentNode === domA) {
+            return true;
+        }
+        currentNode = currentNode.parentNode;
+    }
+    return false;
+}
+
 
 // 拖动目标元素 （必须）
 const handleDragOver = (e: DragEvent) => {
@@ -109,7 +127,7 @@ const handleDrop = (e: DragEvent) => {
     const { dndItem } = useEventElm(e);
     dndBus.over = dndItem;
     const { from, over } = dndBus
-    if (!from || !over || from.item === over.item) return;
+    if (!from || !over || isSubset(from.item, over.item)) return;
     const formList = dndBus.listMap.get(from.listId);
     const toList = dndBus.listMap.get(over?.listId);
     const isBefore = getIsBefore(e);
