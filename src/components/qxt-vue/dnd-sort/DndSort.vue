@@ -52,7 +52,9 @@ defineSlots<{
 <template>
     <DndRoot v-model="list" v-bind="rootAttrs" @change="handleChange">
         <DndItem v-for="(item, i) in list" :key="i" :item="item" :data-key="i" :dnd-name="dndName">
-            <slot :item="item"></slot>
+            <template #handle="{ item }">
+                <slot :item="item"></slot>
+            </template>
             <DndSort v-if="Array.isArray(item[childKey])" v-model="item[childKey]" v-bind="rootAttrs"
                 :dnd-path="[...dndPath, i]" @change="handleChange">
                 <template #default="{ item }">

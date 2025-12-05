@@ -1,6 +1,6 @@
 <script setup lang="ts">
 // import { ref } from 'vue'
-import { useDndBus } from './dnd-hook';
+import { useDndBus, getEventDom } from './dnd-hook';
 type DndItemProps = {
     item: any,
     dndName: string,
@@ -9,15 +9,26 @@ type DndItemProps = {
 const { item, dndName } = defineProps<DndItemProps>();
 const dndBus = useDndBus(dndName);
 dndBus.index += 1;
-//dndBus.itemMap.set(item.id, item);
-// console.log(item);
+
+const handleMouseDown = (e: MouseEvent) => {
+    const { dndItem } = getEventDom(e);
+    if (!dndItem) return;
+    dndItem.setAttribute('draggable', 'true');
+}
+const handleMouseUp = (e: MouseEvent) => {
+    const { dndItem } = getEventDom(e);
+    if (!dndItem) return;
+    dndItem.setAttribute('draggable', 'false');
+}
 </script>
 
 <template>
-    <div class="dnd-item" draggable="true" :dnd-index="dndBus.index">
+    <div class="dnd-item" :dnd-index="dndBus.index">
+        <div v-if="$slots.handle" class="dnd-item-handle" @mousedown="handleMouseDown" @mouseup="handleMouseUp">
+            <slot name="handle" :item="item"></slot>
+        </div>
         <slot :item="item" />
     </div>
 </template>
 
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>

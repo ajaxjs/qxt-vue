@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useDndBus, getIsReverse, getRootDir } from './dnd-hook';
+import { useDndBus, getIsReverse, getRootDir, getEventDom } from './dnd-hook';
 //import { ref } from 'vue';
 import { nextTick, useId } from 'vue';
 import type { IChangeResult } from './type'
@@ -25,20 +25,12 @@ dndBus.pathMap.set(listId, dndPath);
 dndBus._separatorClass = props.separatorClass || '';
 dndBus._separatorStyle = props.separatorStyle || '';
 
-// 事件元素
-const useEventElm = (e: DragEvent) => {
-    const target = e.target as HTMLElement;
-    const dndItem = target.classList.contains('dnd-item') ? target : target.closest('.dnd-item') as HTMLElement;
-    const dndRoot = target.closest('.dnd-root') as HTMLElement;
-    return { target, dndItem, dndRoot };
-};
-
 // 判断是否在目标元素之前
 const getIsBefore = (e: DragEvent) => {
-    const { dndItem, dndRoot } = useEventElm(e);
+    const { dndRoot, getHandle } = getEventDom(e);
     const dir = getRootDir(dndRoot);
     const { x: _x, y: _y } = e;
-    const { left, top, width, height } = dndItem.getBoundingClientRect();
+    const { left, top, width, height } = getHandle()?.getBoundingClientRect();
     let is_before = false;
     if (dir === 'horizontal') {
         is_before = _x < left + width / 2;
@@ -54,7 +46,7 @@ const getIsBefore = (e: DragEvent) => {
 const handleMoveItem = (e: DragEvent) => {
     const { from, over, separator } = dndBus;
     if (!from || !over || isSubset(from.item, over.item)) return;
-    
+
     const overBefore = getIsBefore(e);
 
     if (overBefore) {
@@ -67,7 +59,7 @@ const handleMoveItem = (e: DragEvent) => {
 }
 
 const handleDragStart = (e: DragEvent) => {
-    const { target, dndItem } = useEventElm(e);
+    const { target, dndItem } = getEventDom(e);
     if (!target.dataset.key || !e.dataTransfer || target.classList.contains('dnd-root')) return;
     e.stopPropagation();
     e.dataTransfer.effectAllowed = 'move';
@@ -78,7 +70,7 @@ const handleDragStart = (e: DragEvent) => {
 const handleDragEnter = (e: DragEvent) => {
     if (!dndBus.from) return; // 不同组
     e.preventDefault();
-    const { dndItem } = useEventElm(e);
+    const { dndItem } = getEventDom(e);
 
     if (dndItem === dndBus.from.target) {
         dndBus.removeSeparator();
@@ -108,13 +100,13 @@ function isSubset(domA: HTMLElement, domB: HTMLElement) {
 const handleDragOver = (e: DragEvent) => {
     if (!dndBus.from) return; // 不同组
     e.preventDefault();
-    const { dndItem } = useEventElm(e);
+    const { dndItem } = getEventDom(e);
     if (!dndItem || dndItem === dndBus.from.target) return;
     dndBus.over = dndItem;
     handleMoveItem(e)
 }
 const handleDragLeave = (e: DragEvent) => {
-    const { dndItem } = useEventElm(e);
+    const { dndItem } = getEventDom(e);
     if (!dndItem || dndItem === dndBus?.over?.target) return; // 相同元素
     dndBus.removeSeparator();
     dndBus.over = null;
@@ -124,7 +116,7 @@ const handleDrop = (e: DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
     dndBus.from?.item.classList.remove('dragging')
-    const { dndItem } = useEventElm(e);
+    const { dndItem } = getEventDom(e);
     dndBus.over = dndItem;
     const { from, over } = dndBus
     if (!from || !over || isSubset(from.item, over.item)) return;

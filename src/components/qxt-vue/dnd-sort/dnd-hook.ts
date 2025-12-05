@@ -97,3 +97,11 @@ export const getCssVal = <T extends string | string[]>(
         ? prop.map(p => style.getPropertyValue(p).trim())
         : style.getPropertyValue(prop).trim()) as any;
 };
+
+export const getEventDom = (e: MouseEvent) => {
+    const target = e.target as HTMLElement;
+    const dndItem = target.classList.contains('dnd-item') ? target : target.closest('.dnd-item') as HTMLElement;
+    const dndRoot = target.closest('.dnd-root') as HTMLElement;
+    const getHandle = () => Array.from(dndItem.children).find((item) => item.classList.contains('dnd-item-handle')) as HTMLElement;
+    return { target, dndItem, dndRoot, getHandle };
+}
