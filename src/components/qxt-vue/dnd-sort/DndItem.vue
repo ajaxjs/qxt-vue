@@ -1,18 +1,17 @@
 <script setup lang="ts">
 // import { ref } from 'vue'
-import { useDndBus, getEventDom } from './dnd-hook';
+import { getEventDom } from './dnd-hook';
 type DndItemProps = {
     item: any,
     dndName: string,
 }
 
-const { item, dndName } = defineProps<DndItemProps>();
-const dndBus = useDndBus(dndName);
-dndBus.index += 1;
+const { item } = defineProps<DndItemProps>();
 
 const handleMouseDown = (e: MouseEvent) => {
     const { dndItem } = getEventDom(e);
     if (!dndItem) return;
+
     dndItem.setAttribute('draggable', 'true');
 }
 const handleMouseUp = (e: MouseEvent) => {
@@ -23,7 +22,7 @@ const handleMouseUp = (e: MouseEvent) => {
 </script>
 
 <template>
-    <div class="dnd-item" :dnd-index="dndBus.index">
+    <div class="dnd-item">
         <div v-if="$slots.handle" class="dnd-item-handle" @mousedown="handleMouseDown" @mouseup="handleMouseUp">
             <slot name="handle" :item="item"></slot>
         </div>

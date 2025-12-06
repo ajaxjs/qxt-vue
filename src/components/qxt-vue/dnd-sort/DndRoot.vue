@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { useDndBus, getIsReverse, getRootDir, getEventDom } from './dnd-hook';
-//import { ref } from 'vue';
+import { useDndBus, getIsReverse, getRootDir, getEventDom, getGlobalIndex } from './dnd-hook';
 import { nextTick, useId } from 'vue';
 import type { IChangeResult } from './type'
 
@@ -8,6 +7,9 @@ type IDndRootProps = {
     dndName: string;
     dndPath: number[];
     noSort?: boolean;
+    listId?: string;
+    depth: number;
+    childKey?: string;
     separatorClass?: string;
     separatorStyle?: string;
 }
@@ -20,8 +22,15 @@ const dndPath = props.dndPath || [];
 
 const list = defineModel<any[]>();
 // 列表映射
-dndBus.listMap.set(listId, list.value);
+//dndBus.listMap.set(listId, list.value);
 dndBus.pathMap.set(listId, dndPath);
+dndBus.childKey = props.childKey || 'children';
+
+if (props.depth === 0 && !dndBus.treeMap.has(listId)) {
+    dndBus.treeMap.set(listId, list.value);
+}
+
+
 dndBus._separatorClass = props.separatorClass || '';
 dndBus._separatorStyle = props.separatorStyle || '';
 
@@ -51,10 +60,10 @@ const handleMoveItem = (e: DragEvent) => {
 
     if (overBefore) {
         if (over.item.previousSibling === separator) return;
-        over.root.insertBefore(separator, over.item)
+        over.parent.insertBefore(separator, over.item)
     } else {
         if (over.item.nextSibling === separator) return;
-        over.root.insertBefore(separator, over.item.nextSibling);
+        over.parent.insertBefore(separator, over.item.nextSibling);
     }
 }
 
@@ -64,6 +73,7 @@ const handleDragStart = (e: DragEvent) => {
     e.stopPropagation();
     e.dataTransfer.effectAllowed = 'move';
     dndBus.from = dndItem;
+
     nextTick(() => dndBus.from?.item.classList.add('dragging'))
 }
 // 进入目标元素
@@ -79,7 +89,7 @@ const handleDragEnter = (e: DragEvent) => {
     dndBus.over = dndItem;
     handleMoveItem(e)
 }
-
+// 判断是否为子元素
 function isSubset(domA: HTMLElement, domB: HTMLElement) {
     // 排除自身（如需包含自身，可去掉这行）
     if (domB === domA) return false;
@@ -118,32 +128,41 @@ const handleDrop = (e: DragEvent) => {
     dndBus.from?.item.classList.remove('dragging')
     const { dndItem } = getEventDom(e);
     dndBus.over = dndItem;
-    const { from, over } = dndBus
+    const { from, over } = dndBus;
+
     if (!from || !over || isSubset(from.item, over.item)) return;
-    const formList = dndBus.listMap.get(from.listId);
-    const toList = dndBus.listMap.get(over?.listId);
+
+    // 树全局下标
+    const fromIndex = getGlobalIndex(from.item);
+    const overIndex = getGlobalIndex(over.item);
+
     const isBefore = getIsBefore(e);
-    const isSameRoot = from.root == over.root;
-    const isUp = Number(over.item.getAttribute('dnd-index')) < Number(from.item.getAttribute('dnd-index'));
+    const isSameRoot = from.parent == over.parent;
+    const isUp = overIndex < fromIndex;
+    // 目标项下标
     let toIndex = over.index;
     if (isSameRoot) {
         toIndex += (isUp ? (isBefore ? 0 : 1) : (isBefore ? -1 : 0));
     } else {
         toIndex += (isBefore ? 0 : 1)
     }
+
     // 未改变位置
     if ((isSameRoot && from.index === toIndex) || toIndex < 0) return;
 
 
+    const fromData = from.getData();
+    const toData = over.getData();
+
     dndBus.index = toIndex;
     const toPath = [...props.dndPath, toIndex];
     if (!props.noSort) {
-        const fromData = formList.splice(from.index, 1);
-        toList.splice(toIndex, 0, ...fromData);
+        const fromItem = fromData.list.splice(from.index, 1);
+        toData.list.splice(toIndex, 0, ...fromItem);
     }
     dndBus.removeSeparator();
-    const detail: IChangeResult = { from, over, toPath, toIndex, isBefore, isUp };
-    emit('change', detail);
+    const detail: IChangeResult = { from, over, fromData, toData, toPath, toIndex, isBefore, isUp };
+    emit('change', detail, { ...dndBus });
 
     //e.detail = detail;
 }
@@ -158,7 +177,7 @@ const handleDragEnd = (e: DragEvent) => {
 </script>
 
 <template>
-    <div class="dnd-root" :list-id="listId" @dragstart="handleDragStart" @dragenter="handleDragEnter"
+    <div class="dnd-root" :list-id="listId" :depth="depth" @dragstart="handleDragStart" @dragenter="handleDragEnter"
         @dragover="handleDragOver" @dragleave="handleDragLeave" @drop="handleDrop" @dragend="handleDragEnd">
         <slot></slot>
     </div>

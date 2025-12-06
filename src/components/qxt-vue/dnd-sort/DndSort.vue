@@ -9,6 +9,7 @@ type IDndRootProps = {
     dndPath?: number[];
     childKey?: string;
     noSort?: boolean;
+    depth?: number;
     rootClass?: string;
     separatorClass?: string;
     separatorStyle?: string;
@@ -22,6 +23,11 @@ const dndName = props.dndName || rootId;
 const dndPath = props.dndPath || [];
 const dndBus = useDndBus(dndName);
 const childKey = props.childKey || 'children';
+const depth = props.depth || 0;
+if (depth === 0) {
+    console.log('rootId', rootId, dndBus);
+}
+
 
 const rootAttrs = computed(() => {
     const { noSort, rootClass, separatorStyle, separatorClass } = props;
@@ -29,16 +35,21 @@ const rootAttrs = computed(() => {
         dndName,
         dndPath,
         noSort,
+        childKey,
+        listId: rootId,
         class: rootClass,
         separatorClass,
         separatorStyle,
     }
 })
 
-onUnmounted(() => dndBus.destroy())
+onUnmounted(() => {
+    console.log('----onUnmounted destroy-----');
+    //dndBus.destroy()
+})
 
-const handleChange = (detail: any) => {
-    emit('change', detail);
+const handleChange = (detail: any, dndBus: any) => {
+    emit('change', detail, dndBus);
 }
 
 interface DndSlotProps {
@@ -50,13 +61,13 @@ defineSlots<{
 </script>
 
 <template>
-    <DndRoot v-model="list" v-bind="rootAttrs" @change="handleChange">
+    <DndRoot v-model="list" v-bind="rootAttrs" @change="handleChange" :depth="depth">
         <DndItem v-for="(item, i) in list" :key="i" :item="item" :data-key="i" :dnd-name="dndName">
             <template #handle="{ item }">
                 <slot :item="item"></slot>
             </template>
             <DndSort v-if="Array.isArray(item[childKey])" v-model="item[childKey]" v-bind="rootAttrs"
-                :dnd-path="[...dndPath, i]" @change="handleChange">
+                :dnd-path="[...dndPath, i]" @change="handleChange" :depth="depth + 1">
                 <template #default="{ item }">
                     <slot :item="item"></slot>
                 </template>
