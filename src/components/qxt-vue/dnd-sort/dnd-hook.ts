@@ -69,19 +69,13 @@ class DndBus {
         }
         let item = null;
         let list = tree;
-        try {
-            path.forEach((index, i) => {
-                if (i === path.length - 1) {
-                    item = list[index];
-                } else {
-                    list = list[index][childKey];
-                }
-            });
-        } catch (error) {
-            console.error('获取数据项失败:', error, list, path);
-            console.log('tree', tree);
-            
-        }
+        path.forEach((index, i) => {
+            if (i === path.length - 1) {
+                item = list[index];
+            } else {
+                list = list[index][childKey];
+            }
+        });
         return { item, list };
     }
     // 删除分隔线

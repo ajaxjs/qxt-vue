@@ -86,6 +86,7 @@ const handleDragEnter = (e: DragEvent) => {
         dndBus.removeSeparator();
         return;
     }
+    dndItem.classList.add('dnd-over');
     dndBus.over = dndItem;
     handleMoveItem(e)
 }
@@ -118,6 +119,7 @@ const handleDragOver = (e: DragEvent) => {
 const handleDragLeave = (e: DragEvent) => {
     const { dndItem } = getEventDom(e);
     if (!dndItem || dndItem === dndBus?.over?.target) return; // 相同元素
+    dndItem.classList.remove('over');
     dndBus.removeSeparator();
     dndBus.over = null;
 }
