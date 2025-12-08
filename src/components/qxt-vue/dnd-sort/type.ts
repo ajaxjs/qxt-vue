@@ -28,3 +28,7 @@ export type IChangeResult = {
     isBefore: boolean;
     isUp: boolean;
 }
+
+export interface IItemSlotProps {
+    item: any;
+}

@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { computed, onUnmounted, useId } from 'vue';
-import { useDndBus } from './dnd-hook';
+import { computed, useId } from 'vue';
+import type { IItemSlotProps } from './type'
 import DndRoot from './DndRoot.vue'
 import DndItem from './DndItem.vue'
 
@@ -21,13 +21,8 @@ const list = defineModel<any[]>();
 const rootId = useId();
 const dndName = props.dndName || rootId;
 const dndPath = props.dndPath || [];
-const dndBus = useDndBus(dndName);
 const childKey = props.childKey || 'children';
 const depth = props.depth || 0;
-if (depth === 0) {
-    console.log('rootId', rootId, dndBus);
-}
-
 
 const rootAttrs = computed(() => {
     const { noSort, rootClass, separatorStyle, separatorClass } = props;
@@ -43,25 +38,18 @@ const rootAttrs = computed(() => {
     }
 })
 
-onUnmounted(() => {
-    //dndBus.destroy()
-})
-
 const handleChange = (detail: any) => {
     emit('change', detail);
 }
 
-interface DndSlotProps {
-    item: any;
-}
 defineSlots<{
-    default: (props: DndSlotProps) => any;
+    default: (props: IItemSlotProps) => any;
 }>();
 </script>
 
 <template>
     <DndRoot v-model="list" v-bind="rootAttrs" @change="handleChange" :depth="depth">
-        <DndItem v-for="(item, i) in list" :key="i" :item="item" :dnd-name="dndName">
+        <DndItem v-for="(item, i) in list" :key="i" :item="item">
             <template #handle="slotProps">
                 <slot v-bind="slotProps"></slot>
             </template>

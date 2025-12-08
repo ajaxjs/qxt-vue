@@ -3,8 +3,7 @@
 import { computed } from 'vue';
 import { getEventDom } from './dnd-hook';
 type DndItemProps = {
-    item: any,
-    dndName: string,
+    item: any;
 }
 
 const { item } = defineProps<DndItemProps>();
