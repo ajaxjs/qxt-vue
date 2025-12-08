@@ -53,7 +53,7 @@ class DndBus {
         const listId = parent.getAttribute('list-id');
         const direction = getRootDir(parent);
         const reverse = getIsReverse(parent);
-        
+
         const { path, root } = getTargetPath(item);
         const rootId = root.getAttribute('list-id') || '';
         const getData = () => this.getItemData(rootId, path);
@@ -69,13 +69,19 @@ class DndBus {
         }
         let item = null;
         let list = tree;
-        path.forEach((index, i) => {
-            if (i === path.length - 1) {
-                item = list[index];
-            } else {
-                list = list[index][childKey];
-            }
-        });
+        try {
+            path.forEach((index, i) => {
+                if (i === path.length - 1) {
+                    item = list[index];
+                } else {
+                    list = list[index][childKey];
+                }
+            });
+        } catch (error) {
+            console.error('获取数据项失败:', error, list, path);
+            console.log('tree', tree);
+            
+        }
         return { item, list };
     }
     // 删除分隔线

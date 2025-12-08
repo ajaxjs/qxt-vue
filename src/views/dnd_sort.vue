@@ -4,9 +4,9 @@ import DndSort from '@/components/qxt-vue/dnd-sort/DndSort.vue'
 import type { IChangeResult } from '@/components/qxt-vue/dnd-sort/type'
 
 const children = [
-    { id: '6', title: '项目 C1', description: '这是第六个可拖拽项目' },
-    { id: '7', title: '项目 C2', description: '这是第七个可拖拽项目' },
-    { id: '8', title: '项目 C3', description: '这是第八个可拖拽项目' },
+    { id: '6', title: '三目 C1', description: '这是第六个可拖拽项目' },
+    { id: '7', title: '三目 C2', description: '这是第七个可拖拽项目' },
+    { id: '8', title: '三目 C3', description: '这是第八个可拖拽项目' },
 ];
 // 第一个列表数据
 const list1 = ref([
@@ -19,9 +19,9 @@ const list1 = ref([
 
 // 第二个列表数据
 const list2 = ref([
-    { id: '6', title: '项目 B6', description: '这是第六个可拖拽项目' },
-    { id: '7', title: '项目 B7', description: '这是第七个可拖拽项目' },
-    { id: '8', title: '项目 B8', description: '这是第八个可拖拽项目' },
+    { id: '6', title: '条目 B6', description: '这是第六个可拖拽项目' },
+    { id: '7', title: '条目 B7', description: '这是第七个可拖拽项目' },
+    { id: '8', title: '条目 B8', description: '这是第八个可拖拽项目' },
 ]);
 
 // 第三个列表数据（使用不同的dnd-id，不能与前两个相互拖拽）
@@ -38,16 +38,16 @@ const tree = ref([
 
 const planTree = toRaw(list1.value);
 
-const handleChange = (detail: IChangeResult, dndBus: any) => {
-    console.log('change:', detail, '\ndndBus',dndBus);
+const handleChange = (detail: IChangeResult) => {
+    console.log('change:', detail);
 }
 
 const handleSort = (detail: IChangeResult) => {
     const { from, over, isBefore, isUp, toPath } = detail;
     if (isBefore) {
-        over.root.insertBefore(from.item, over.item);
+        over.parent.insertBefore(from.item, over.item);
     } else {
-        over.root.insertBefore(from.item, over.item.nextSibling);
+        over.parent.insertBefore(from.item, over.item.nextSibling);
     }
     console.log(from.path.join(' -> '), isUp ? '上移' : '下移', '到', toPath.join(' -> '), isBefore ? '前' : '后');
 }

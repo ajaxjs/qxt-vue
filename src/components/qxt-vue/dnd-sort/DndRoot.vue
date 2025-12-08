@@ -69,7 +69,7 @@ const handleMoveItem = (e: DragEvent) => {
 
 const handleDragStart = (e: DragEvent) => {
     const { target, dndItem } = getEventDom(e);
-    if (!target.dataset.key || !e.dataTransfer || target.classList.contains('dnd-root')) return;
+    if (!e.dataTransfer || target.classList.contains('dnd-root')) return;
     e.stopPropagation();
     e.dataTransfer.effectAllowed = 'move';
     dndBus.from = dndItem;
@@ -162,7 +162,7 @@ const handleDrop = (e: DragEvent) => {
     }
     dndBus.removeSeparator();
     const detail: IChangeResult = { from, over, fromData, toData, toPath, toIndex, isBefore, isUp };
-    emit('change', detail, { ...dndBus });
+    emit('change', detail);
 
     //e.detail = detail;
 }

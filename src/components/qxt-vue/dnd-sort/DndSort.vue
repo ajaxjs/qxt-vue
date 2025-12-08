@@ -44,12 +44,11 @@ const rootAttrs = computed(() => {
 })
 
 onUnmounted(() => {
-    console.log('----onUnmounted destroy-----');
     //dndBus.destroy()
 })
 
-const handleChange = (detail: any, dndBus: any) => {
-    emit('change', detail, dndBus);
+const handleChange = (detail: any) => {
+    emit('change', detail);
 }
 
 interface DndSlotProps {
@@ -62,7 +61,7 @@ defineSlots<{
 
 <template>
     <DndRoot v-model="list" v-bind="rootAttrs" @change="handleChange" :depth="depth">
-        <DndItem v-for="(item, i) in list" :key="i" :item="item" :data-key="i" :dnd-name="dndName">
+        <DndItem v-for="(item, i) in list" :key="i" :item="item" :dnd-name="dndName">
             <template #handle="{ item }">
                 <slot :item="item"></slot>
             </template>
