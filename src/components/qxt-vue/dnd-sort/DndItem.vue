@@ -1,5 +1,6 @@
 <script setup lang="ts">
 // import { ref } from 'vue'
+import { computed } from 'vue';
 import { getEventDom } from './dnd-hook';
 type DndItemProps = {
     item: any,
@@ -7,6 +8,11 @@ type DndItemProps = {
 }
 
 const { item } = defineProps<DndItemProps>();
+const slotProps = computed(() => {
+    return {
+        item,
+    }
+});
 
 const handleMouseDown = (e: MouseEvent) => {
     const { dndItem } = getEventDom(e);
@@ -24,9 +30,9 @@ const handleMouseUp = (e: MouseEvent) => {
 <template>
     <div class="dnd-item" @dragend="handleMouseUp" @mouseup="handleMouseUp">
         <div v-if="$slots.handle" class="dnd-item-handle" @mousedown="handleMouseDown">
-            <slot name="handle" :item="item"></slot>
+            <slot name="handle" v-bind="slotProps"></slot>
         </div>
-        <slot :item="item" />
+        <slot v-bind="slotProps" />
     </div>
 </template>
 
