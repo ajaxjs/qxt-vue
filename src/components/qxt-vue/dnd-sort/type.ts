@@ -3,19 +3,19 @@ type IData = { item: any; list: any[] }
 // DndBus拖拽项
 export type IItem = {
     root: HTMLElement;
-    parent: HTMLElement;
-    target: HTMLElement;
     item: HTMLElement;
-    rootId: string;
+    //parent: HTMLElement;
+    //target: HTMLElement;
+    // rootId: string;
     // data: any;
     // dataList: any[] | null;
-    path: number[];
-    index: number;
-    itemList: HTMLElement[];
-    listId: string | null;
-    direction: 'horizontal' | 'vertical';
-    reverse: boolean;
-    getData: () => IData;
+    // path: number[];
+    // index: number;
+    // itemList: HTMLElement[];
+    // listId: string | null;
+    // direction: 'horizontal' | 'vertical';
+    // reverse: boolean;
+    // getData: () => IData;
 }
 
 export type IChangeResult = {
@@ -27,6 +27,11 @@ export type IChangeResult = {
     toIndex: number;
     isBefore: boolean;
     isUp: boolean;
+}
+
+export interface IDndProps {
+    dndName: string;
+    dndPath: number[];
 }
 
 export interface IItemSlotProps {

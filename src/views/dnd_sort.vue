@@ -45,11 +45,11 @@ const handleChange = (detail: IChangeResult) => {
 const handleSort = (detail: IChangeResult) => {
     const { from, over, isBefore, isUp, toPath } = detail;
     if (isBefore) {
-        over.parent.insertBefore(from.item, over.item);
+        //over.parent.insertBefore(from.item, over.item);
     } else {
-        over.parent.insertBefore(from.item, over.item.nextSibling);
+        //over.parent.insertBefore(from.item, over.item.nextSibling);
     }
-    console.log(from.path.join(' -> '), isUp ? '上移' : '下移', '到', toPath.join(' -> '), isBefore ? '前' : '后');
+    //console.log(from.path.join(' -> '), isUp ? '上移' : '下移', '到', toPath.join(' -> '), isBefore ? '前' : '后');
 }
 
 </script>
@@ -97,6 +97,14 @@ const handleSort = (detail: IChangeResult) => {
 }
 
 .dragging-over>.item {
+    background-color: #86bbff !important;
+}
+
+.dnd-dragging {
+    opacity: 0.5;
+}
+
+.dnd-over{
     background-color: #86bbff !important;
 }
 </style>

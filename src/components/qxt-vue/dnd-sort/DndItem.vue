@@ -1,38 +1,39 @@
 <script setup lang="ts">
-// import { ref } from 'vue'
 import { computed } from 'vue';
-import { getEventDom } from './dnd-hook';
-type DndItemProps = {
-    item: any;
-}
+import DndRoot from './DndRoot.vue';
+import { useDndItem } from './dnd-item';
+import type { IDndProps } from './type';
 
-const { item } = defineProps<DndItemProps>();
-const slotProps = computed(() => {
-    return {
-        item,
-    }
+const props = defineProps<IDndProps>();
+const item = defineModel<any>({
+    default: () => ({})
 });
+const { handleMouseDown, handleMouseUp, handleDragStart, handleDragEnter, handleDragLeave, handleDragDrop, handleDragEnd } = useDndItem(props,item);
 
-const handleMouseDown = (e: MouseEvent) => {
-    const { dndItem } = getEventDom(e);
-    if (!dndItem) return;
+const itemAttrs = computed(() => {
+    const { dndPath, dndName } = props
+    return {
+        dndPath,
+        dndName
+    }
+})
 
-    dndItem.setAttribute('draggable', 'true');
-}
-const handleMouseUp = (e: MouseEvent) => {
-    const { dndItem } = getEventDom(e);
-    if (!dndItem) return;
-    dndItem.removeAttribute('draggable');
-}
 </script>
 
 <template>
-    <div class="dnd-item" @dragend="handleMouseUp" @mouseup="handleMouseUp">
-        <div v-if="$slots.handle" class="dnd-item-handle" @mousedown="handleMouseDown">
-            <slot name="handle" v-bind="slotProps"></slot>
+    <div class="dnd-item" @dragstart="handleDragStart" @dragenter="handleDragEnter" @dragleave="handleDragLeave"
+        @drop="handleDragDrop" @dragend="handleDragEnd">
+        <div class="dnd-item-handle" @mousedown="handleMouseDown" @mouseup="handleMouseUp">
+            <slot :item="item" v-bind="itemAttrs"></slot>
         </div>
-        <slot v-bind="slotProps" />
+        <DndRoot v-if="item.children" v-model="item.children" v-bind="{ dndName, dndPath }">
+            <template #default="itemSlotProps">
+                <slot v-bind="itemSlotProps"></slot>
+            </template>
+        </DndRoot>
     </div>
 </template>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+
+</style>
