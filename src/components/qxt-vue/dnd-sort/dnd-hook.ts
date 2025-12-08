@@ -89,8 +89,8 @@ class DndBus {
         this._separator?.remove();
     }
     destroy() {
-        this.removeSeparator();
         this.reset();
+        this.removeSeparator();
         dndBusMap.delete(this.dndName);
     }
 }

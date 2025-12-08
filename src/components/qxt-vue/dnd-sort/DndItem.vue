@@ -17,13 +17,13 @@ const handleMouseDown = (e: MouseEvent) => {
 const handleMouseUp = (e: MouseEvent) => {
     const { dndItem } = getEventDom(e);
     if (!dndItem) return;
-    dndItem.setAttribute('draggable', 'false');
+    dndItem.removeAttribute('draggable');
 }
 </script>
 
 <template>
-    <div class="dnd-item">
-        <div v-if="$slots.handle" class="dnd-item-handle" @mousedown="handleMouseDown" @mouseup="handleMouseUp">
+    <div class="dnd-item" @dragend="handleMouseUp" @mouseup="handleMouseUp">
+        <div v-if="$slots.handle" class="dnd-item-handle" @mousedown="handleMouseDown">
             <slot name="handle" :item="item"></slot>
         </div>
         <slot :item="item" />

@@ -171,6 +171,7 @@ const handleDrop = (e: DragEvent) => {
 const handleDragEnd = (e: DragEvent) => {
     e.preventDefault();
     dndBus.from?.item.classList.remove('dragging')
+    dndBus.over?.item.classList.remove('dnd-over');
     dndBus.reset();
 }
 
