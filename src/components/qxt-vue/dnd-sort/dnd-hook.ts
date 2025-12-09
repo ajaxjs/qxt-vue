@@ -24,9 +24,6 @@ class DndBus {
         return this._over;
     }
     set over(item: IItem | null) {
-        if (!item) {
-            this.removeOverClass();
-        }
         this._over = item;
     }
     getSeparator(): HTMLElement {
@@ -54,21 +51,18 @@ class DndBus {
         return list;
     }
     reset() {
-        const { from } = this;
+        const { from, over } = this;
         if (from) {
             from.item.removeAttribute('draggable');
             from.item.classList.remove('dnd-dragging');
+            from.item.closest('.dnd-tree')?.classList.remove('is-dragging');
         }
-        this.removeOverClass();
+        if (over) {
+            over.item?.closest('.dnd-tree')?.classList.remove('is-dragging');
+        }
         this.removeSeparator();
         this._from = null;
         this._over = null;
-    }
-    removeOverClass() {
-        const { over } = this;
-        if (over) {
-            over.root.classList.remove('is-dragging');
-        }
     }
 }
 
@@ -152,7 +146,7 @@ export function getGlobalIndex(tree: any[], item: any, childKey: string = "child
         return false;
     };
     dfs(tree);
-    return index; // 最后一次 index++ 后未命中，需回退
+    return index;
 }
 
 // 判断是否为子元素

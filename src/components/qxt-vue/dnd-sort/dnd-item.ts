@@ -1,8 +1,8 @@
 import { nextTick } from 'vue';
 import { useDndBus, getEventDom, getIsBefore, getGlobalIndex, isSubset } from './dnd-hook';
-import type { IDndProps, IItem } from './type';
+import type { IItemProps, IItem } from './type';
 
-export const useDndItem = (props: IDndProps, itemData: any) => {
+export const useDndItem = (props: IItemProps, itemData: any) => {
     const dndBus = useDndBus(props.dndName);
 
     const buildItem = (item: HTMLElement, root: HTMLElement): IItem => {
@@ -23,6 +23,7 @@ export const useDndItem = (props: IDndProps, itemData: any) => {
         const { dndItem, dndRoot } = eventDom;
         e.stopPropagation();
         e.dataTransfer.effectAllowed = 'move';
+        dndItem.closest('.dnd-tree')?.classList.add('is-dragging')
         // 构建拖拽项
         dndBus.from = buildItem(dndItem, dndRoot);
         nextTick(() => dndItem.classList.add('dnd-dragging'));
@@ -75,11 +76,16 @@ export const useDndItem = (props: IDndProps, itemData: any) => {
     }
     // 拖拽放下
     const handleDragDrop = (e: DragEvent) => {
-        const { dndItem, dndRoot } = getEventDom(e);
+        const { target, dndItem, dndRoot } = getEventDom(e);
         e.stopPropagation();
         if (!dndBus.from) {
             return;
         }
+        if (target.classList.contains('dnd-root')) {
+            // TODO: 处理拖入到根元素的情况
+            return;
+        }
+
         dndBus.over = buildItem(dndItem, dndRoot);
         const { from, over } = dndBus;
         const isSameRoot = from.root === over.root;
@@ -107,10 +113,14 @@ export const useDndItem = (props: IDndProps, itemData: any) => {
             return;
         }
         // 交换拖拽项在目标列表中的位置
-        const fromList = dndBus.getSibList(from);
-        const toList = dndBus.getSibList(over);
-        fromList.splice(from.index, 1);
-        toList.splice(toIndex, 0, from.data);
+        console.log(props.manualSort);
+        
+        if (!props.manualSort) {
+            const fromList = dndBus.getSibList(from);
+            const toList = dndBus.getSibList(over);
+            fromList.splice(from.index, 1);
+            toList.splice(toIndex, 0, from.data);
+        }
         // 触发change事件
         props.onChange(detail);
         dndBus.reset();
@@ -143,12 +153,15 @@ export const useDndItem = (props: IDndProps, itemData: any) => {
     };
 }
 
-export const useItemAttrs = (props: IDndProps, options?: any) => {
-    const { rootId, dndName, dndPath, onChange } = props;
+export const useItemAttrs = (props: IItemProps, options?: any) => {
+    const { rootId, dndName, dndPath, rootClass, itemClass, manualSort, onChange } = props;
     return {
         rootId,
         dndName,
         dndPath,
+        rootClass,
+        itemClass,
+        manualSort,
         onChange,
         ...options,
     }

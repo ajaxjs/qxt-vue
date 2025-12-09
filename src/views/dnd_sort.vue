@@ -60,7 +60,7 @@ const handleSort = (detail: IChangeResult) => {
     <div>响应式数据排序</div>
     <div class="flex gap-3">
         <div class="w-2/3">
-            <DndSort v-model="tree" dnd-name="mytree" @change="handleChange">
+            <DndSort v-model="tree" dnd-name="mytree" root-class="my-root" @change="handleChange">
                 <template #default="{ item }">
                     <div class="item p-2 border border-gray-300 rounded-md">
                         <h3 class="text-lg font-bold">{{ item.title }}</h3>

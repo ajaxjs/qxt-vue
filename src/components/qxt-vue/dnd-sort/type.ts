@@ -10,20 +10,6 @@ export type IItem = {
     path: number[];
     item: HTMLElement;
     data: any;
-    // siblings: HTMLElement[];
-
-    //parent: HTMLElement;
-    //target: HTMLElement;
-    // rootId: string;
-    // data: any;
-    // dataList: any[] | null;
-    // path: number[];
-    // index: number;
-    // itemList: HTMLElement[];
-    // listId: string | null;
-    // direction: 'horizontal' | 'vertical';
-    // reverse: boolean;
-    // getData: () => IData;
 }
 
 
@@ -37,18 +23,15 @@ export type IChangeResult = {
     isBefore: boolean;
     isGoUp: boolean;
     isSameRoot: boolean;
-    // fromData: IData;
-    // toData: IData;
-    // toPath: number[];
-    // toIndex: number;
-    // isBefore: boolean;
-    // isUp: boolean;
 }
 
-export interface IDndProps {
+export interface IItemProps {
     rootId: string;
     dndName: string;
     dndPath: number[];
+    manualSort?: boolean
+    rootClass?: string;
+    itemClass?: string;
     onChange: (result: IChangeResult) => void;
 }
 

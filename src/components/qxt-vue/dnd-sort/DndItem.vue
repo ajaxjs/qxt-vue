@@ -2,9 +2,9 @@
 import { computed } from 'vue';
 import DndRoot from './DndRoot.vue';
 import { useDndItem, useItemAttrs } from './dnd-item';
-import type { IDndProps } from './type';
+import type { IItemProps } from './type';
 
-const props = defineProps<IDndProps>();
+const props = defineProps<IItemProps>();
 const item = defineModel<any>({
     default: () => ({})
 });
@@ -30,8 +30,8 @@ const itemAttrs = computed(() => {
 </script>
 
 <template>
-    <div class="dnd-item" @dragstart="handleDragStart" @dragenter="handleDragEnter" @dragleave="handleDragLeave"
-        @dragover="handleDragOver" @drop="handleDragDrop" @dragend="handleDragEnd">
+    <div class="dnd-item" @dragstart="handleDragStart" @dragenter="handleDragEnter"
+        @dragleave="handleDragLeave" @dragover="handleDragOver" @drop="handleDragDrop" @dragend="handleDragEnd">
         <div class="dnd-item-handle" @mousedown="handleMouseDown" @mouseup="handleMouseUp">
             <slot :item="item" v-bind="itemAttrs"></slot>
         </div>
