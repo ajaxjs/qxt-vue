@@ -45,7 +45,7 @@ const handleChange = (detail: IChangeResult) => {
 const handleSort = (detail: IChangeResult) => {
     const { from, over, to } = detail;
     console.log(from, over, to);
-    
+
     // if (isBefore) {
     //     //over.parent.insertBefore(from.item, over.item);
     // } else {
@@ -106,10 +106,11 @@ const handleSort = (detail: IChangeResult) => {
     opacity: 0.5;
 }
 
-.dnd-item-handle{
+.dnd-item-handle {
     position: relative;
 }
-.dnd-item-handle::after{
+
+.dnd-item-handle::after {
     content: '';
     position: absolute;
     top: 0;
@@ -118,7 +119,7 @@ const handleSort = (detail: IChangeResult) => {
     height: 100%;
 }
 
-.dnd-over .dnd-item-handle::before{
+.dnd-over .dnd-item-handle::before {
     content: '';
     position: absolute;
     top: 0;

@@ -20,9 +20,9 @@ const {
 } = useDndItem(props, item);
 
 const itemAttrs = computed(() => {
-    const { dndPath, dndName } = props
+    const { dndPath: path, dndName } = props
     return {
-        dndPath,
+        path,
         dndName
     }
 })
@@ -30,8 +30,8 @@ const itemAttrs = computed(() => {
 </script>
 
 <template>
-    <div class="dnd-item" @dragstart="handleDragStart" @dragenter="handleDragEnter"
-        @dragleave="handleDragLeave" @dragover="handleDragOver" @drop="handleDragDrop" @dragend="handleDragEnd">
+    <div class="dnd-item" @dragstart="handleDragStart" @dragenter="handleDragEnter" @dragleave="handleDragLeave"
+        @dragover="handleDragOver" @drop="handleDragDrop" @dragend="handleDragEnd">
         <div class="dnd-item-handle" @mousedown="handleMouseDown" @mouseup="handleMouseUp">
             <slot :item="item" v-bind="itemAttrs"></slot>
         </div>

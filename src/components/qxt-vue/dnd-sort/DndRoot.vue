@@ -25,22 +25,3 @@ const list = defineModel<any[]>({
         </DndItem>
     </div>
 </template>
-
-<style lang="scss">
-.dnd-separator{
-    position: relative;
-    height: 0;
-    z-index: 1;
-}
-.dnd-separator::after{
-    content: '';
-    position: absolute;
-    top: -2px;
-    left: 0;
-    width: 100%;
-    height: 4px;
-    background-color: #3288faa1;
-    border-radius: 2px;
-    box-shadow: 0 0 5px #3288faa1;
-}
-</style>

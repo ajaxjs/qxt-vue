@@ -1,4 +1,3 @@
-//type IData = { item: any; list: any[] }
 
 // DndBus拖拽项
 export type IItem = {
@@ -37,4 +36,6 @@ export interface IItemProps {
 
 export interface IItemSlotProps {
     item: any;
+    path: number[];
+    dndName: string;
 }
