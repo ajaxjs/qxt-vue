@@ -39,16 +39,18 @@ const tree = ref([
 const planTree = toRaw(list1.value);
 
 const handleChange = (detail: IChangeResult) => {
-    console.log('change:', detail);
+    console.log('---change:', detail);
 }
 
 const handleSort = (detail: IChangeResult) => {
-    const { from, over, isBefore, isUp, toPath } = detail;
-    if (isBefore) {
-        //over.parent.insertBefore(from.item, over.item);
-    } else {
-        //over.parent.insertBefore(from.item, over.item.nextSibling);
-    }
+    const { from, over, to } = detail;
+    console.log(from, over, to);
+    
+    // if (isBefore) {
+    //     //over.parent.insertBefore(from.item, over.item);
+    // } else {
+    //     //over.parent.insertBefore(from.item, over.item.nextSibling);
+    // }
     //console.log(from.path.join(' -> '), isUp ? '上移' : '下移', '到', toPath.join(' -> '), isBefore ? '前' : '后');
 }
 
@@ -104,7 +106,25 @@ const handleSort = (detail: IChangeResult) => {
     opacity: 0.5;
 }
 
-.dnd-over{
-    background-color: #86bbff !important;
+.dnd-item-handle{
+    position: relative;
+}
+.dnd-item-handle::after{
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.dnd-over .dnd-item-handle::before{
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #4998ff60;
 }
 </style>

@@ -1,26 +1,37 @@
 <script setup lang="ts">
 import { useId } from 'vue';
-//import type { IDndProps } from './type';
+// import type { IChangeResult } from './type';
+// import { emit } from './dnd-item';
 import { useDndBus } from './dnd-hook';
 import DndRoot from './DndRoot.vue';
 type ISortProps = {
     dndName?: string;
     childKey?: string;
 }
-const dndId = useId();
+
+const emit = defineEmits(['change']);
+const rootId = useId();
 const props = defineProps<ISortProps>();
-const dndName = props.dndName || dndId;
+const dndName = props.dndName || rootId;
 const childKey = props.childKey || 'children';
+
+const onChange = (detail: any) => {
+
+    // console.log('---change from List:', dndBus.getSibList(from));
+
+    emit('change', detail);
+}
 
 const list = defineModel<any[]>();
 const rootAttrs = {
     dndPath: [] as number[],
     dndName,
+    rootId,
+    onChange,
 }
 const dndBus = useDndBus(dndName);
 dndBus.childKey = childKey;
-console.log('dndBus:', dndBus);
-
+dndBus.treeMap.set(rootId, list.value);
 
 </script>
 
