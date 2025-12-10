@@ -148,19 +148,3 @@ export function getGlobalIndex(tree: any[], item: any, childKey: string = "child
     dfs(tree);
     return index;
 }
-
-// 判断是否为子元素
-export function isSubset(root: HTMLElement, item: HTMLElement) {
-    // 排除自身（如需包含自身，可去掉这行）
-    if (item === root) return false;
-
-    let currentNode = item.parentNode;
-    // 向上遍历父节点，直到根节点
-    while (currentNode) {
-        if (currentNode === root) {
-            return true;
-        }
-        currentNode = currentNode.parentNode;
-    }
-    return false;
-}

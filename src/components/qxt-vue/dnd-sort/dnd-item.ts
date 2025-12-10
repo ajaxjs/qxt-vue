@@ -1,5 +1,5 @@
 import { nextTick } from 'vue';
-import { useDndBus, getEventDom, getIsBefore, getGlobalIndex, isSubset } from './dnd-hook';
+import { useDndBus, getEventDom, getIsBefore, getGlobalIndex } from './dnd-hook';
 import type { IItemProps, IItem } from './type';
 
 export const useDndItem = (props: IItemProps, itemData: any) => {
@@ -49,7 +49,7 @@ export const useDndItem = (props: IItemProps, itemData: any) => {
         const { dndItem, dndRoot } = getEventDom(e);
         dndBus.over = buildItem(dndItem, dndRoot);
         // 自身，或子集
-        if (dndBus.from.item === dndItem || isSubset(dndBus.from.item, dndBus.over.item)) {
+        if (dndBus.from.item === dndItem || dndBus.from.item.contains(dndItem)) {
             dndBus.removeSeparator();
             return;
         }
