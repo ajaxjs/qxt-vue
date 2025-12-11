@@ -31,6 +31,7 @@ export interface IItemProps {
     manualSort?: boolean
     rootClass?: string;
     itemClass?: string;
+    handleClass?: string;
     onChange: (result: IChangeResult) => void;
 }
 

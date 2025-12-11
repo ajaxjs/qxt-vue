@@ -112,8 +112,7 @@ export const useDndItem = (props: IItemProps, itemData: any) => {
             dndBus.reset();
             return;
         }
-        // 交换拖拽项在目标列表中的位置
-        console.log(props.manualSort);
+        console.log('3-Drop:', detail);
         
         if (!props.manualSort) {
             const fromList = dndBus.getSibList(from);
@@ -154,13 +153,14 @@ export const useDndItem = (props: IItemProps, itemData: any) => {
 }
 
 export const useItemAttrs = (props: IItemProps, options?: any) => {
-    const { rootId, dndName, dndPath, rootClass, itemClass, manualSort, onChange } = props;
+    const { rootId, dndName, dndPath, rootClass, itemClass, handleClass, manualSort, onChange } = props;
     return {
         rootId,
         dndName,
         dndPath,
         rootClass,
         itemClass,
+        handleClass,
         manualSort,
         onChange,
         ...options,

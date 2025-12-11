@@ -77,6 +77,15 @@ const handleSort = (detail: IChangeResult) => {
     </div>
 
     <div class="mt-3">
+        <div></div>
+        <DndSort v-model="list1" root-class="flex border border-blue-200 rounded-md" item-class="p-1">
+            <template #default="{ item }">
+                <div class="item border border-gray-300 p-2 rounded-md">{{ item.title }}</div>
+            </template>
+        </DndSort>
+    </div>
+
+    <div class="mt-3">
         <div>非响应式数据排序(Dom排序)</div>
         <DndSort v-model="planTree" @change="handleSort">
             <template #default="{ item }">
@@ -90,7 +99,7 @@ const handleSort = (detail: IChangeResult) => {
 </template>
 
 <style lang="scss">
-.dnd-root {
+.dnd-root:not(.flex) {
     margin-left: 20px;
 }
 

@@ -30,9 +30,9 @@ const itemAttrs = computed(() => {
 </script>
 
 <template>
-    <div class="dnd-item" @dragstart="handleDragStart" @dragenter="handleDragEnter" @dragleave="handleDragLeave"
+    <div class="dnd-item" :class="itemClass" @dragstart="handleDragStart" @dragenter="handleDragEnter" @dragleave="handleDragLeave"
         @dragover="handleDragOver" @drop="handleDragDrop" @dragend="handleDragEnd">
-        <div class="dnd-item-handle" @mousedown="handleMouseDown" @mouseup="handleMouseUp">
+        <div class="dnd-item-handle" :class="handleClass" @mousedown="handleMouseDown" @mouseup="handleMouseUp">
             <slot :item="item" v-bind="itemAttrs"></slot>
         </div>
         <DndRoot v-if="item.children" v-model="item.children" v-bind="useItemAttrs(props)">
