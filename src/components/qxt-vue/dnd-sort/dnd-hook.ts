@@ -41,14 +41,9 @@ class DndBus {
     }
     // 获取Item同级列表
     getSibList(item: IItem) {
-        const { path, rootId } = item
+        const { rootId } = item
         const tree = this.treeMap.get(rootId);
-
-        let list = tree;
-        for (const index of path.slice(0, -1)) {
-            list = list[index][this.childKey];
-        }
-        return list;
+        return findSiblings(tree, item.data, this.childKey);
     }
     reset() {
         const { from, over } = this;
@@ -148,3 +143,38 @@ export function getGlobalIndex(tree: any[], item: any, childKey: string = "child
     dfs(tree);
     return index;
 }
+/**
+ * 找到同级列表
+ * @param tree 树结构数组
+ * @param item 目标元素
+ * @param childKey 子元素键名，默认"children"
+ * @returns 同级列表，未找到返回空数组
+ */
+function findSiblings<T extends any[]>(
+    tree: T,
+    item: any,
+    childKey: string = "children"
+): any[] {
+    // 遍历当前层
+    for (let i = 0; i < tree.length; i++) {
+        const node = tree[i];
+
+        // 1. 当前节点就是目标 → 返回当前层数组（即它的兄弟列表）
+        if (node === item) {
+            return tree;
+        }
+
+        // 2. 检查子节点
+        const children = (node as any)[childKey];
+        if (Array.isArray(children)) {
+            const result = findSiblings(children, item, childKey);
+            if (result !== null) {
+                return result; // 找到后逐层返回
+            }
+        }
+    }
+
+    // 未找到
+    return [];
+}
+
