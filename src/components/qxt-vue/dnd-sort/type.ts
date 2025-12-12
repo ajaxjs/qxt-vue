@@ -37,7 +37,7 @@ export interface IItemProps {
     onExpand: (detail: IExpendResult) => void;
 }
 
-type IExpend = undefined | {
+export type IExpend = {
     get: () => boolean,
     set: (expend: boolean) => void,
     toggle: () => boolean

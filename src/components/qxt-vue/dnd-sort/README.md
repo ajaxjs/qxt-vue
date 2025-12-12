@@ -37,7 +37,7 @@ dnd-sort/
 | itemClass | string | '' | 拖拽项的 CSS 类名 |
 | handleClass | string | '' | 拖拽手柄的 CSS 类名 |
 | manualSort | boolean | false | 是否手动排序，为true时，通过`@change`事件手动排序。 |
-| expand | boolean \| Function | false | 是否展开子项，可为布尔值或函数。函数接收 IExpendEvent 参数并返回布尔值 |
+| expand | boolean \| Function | true | 是否展开子项，可为布尔值或函数。函数接收 IExpendEvent 参数并返回布尔值 |
 
 ## 事件
 

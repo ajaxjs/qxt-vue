@@ -65,7 +65,7 @@ const onExpend = (show: any, detail: IExpendEvent) => {
     <div>响应式数据排序</div>
     <div class="flex gap-3">
         <div class="w-2/3">
-            <DndSort v-model="tree" expand dnd-name="mytree" root-class="my-root" @change="handleChange"
+            <DndSort v-model="tree" dnd-name="mytree" :expand="false" root-class="my-root" @change="handleChange"
                 @expand="onExpend">
                 <template #default="{ item, expand }">
                     <div class="item p-2 border border-gray-300 rounded-md">

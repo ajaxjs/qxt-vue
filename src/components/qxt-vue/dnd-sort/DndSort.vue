@@ -16,9 +16,12 @@ type ISortProps = {
 
 const emit = defineEmits(['change', 'expand']);
 const rootId = useId();
-const props = defineProps<ISortProps>();
+const props = withDefaults(defineProps<ISortProps>(), {
+    expand: true,
+});
 const dndName = props.dndName || rootId;
 const childKey = props.childKey || 'children';
+console.log('---++', props.expand)
 // 触发Change
 const onChange = (detail: any) => {
     emit('change', detail);

@@ -2,7 +2,7 @@
 import { ref, computed } from 'vue';
 import DndRoot from './DndRoot.vue';
 import { useDndItem, useItemAttrs } from './dnd-item';
-import type { IItemProps, IExpendEvent, IExpendResult } from './type';
+import type { IItemProps, IExpendEvent, IExpendResult, IExpend } from './type';
 
 const props = defineProps<IItemProps>();
 const item = defineModel<any>({
@@ -25,11 +25,11 @@ const getExpendEvent = (): IExpendEvent => {
     return { item: item.value, path, rootId, dndName };
 }
 
-const getExpand = () => {
+const getExpand = (): boolean => {
     if (props.expand instanceof Function) {
         return props.expand(getExpendEvent());
     }
-    return props.expand;
+    return props.expand ?? false;
 }
 const expanded = ref(getExpand())
 
@@ -40,17 +40,18 @@ const setExpand = (show: boolean) => {
         expand: show
     }
     props.onExpand(eventResult);
+    return show;
 }
 
 const itemAttrs = computed(() => {
     const { dndPath: path, rootId, dndName } = props
-    let expand;
+    let expand: undefined | IExpend = undefined;
     if (Array.isArray(item.value.children)) {
         expand = {
             get: () => expanded.value,
             set: (expend: boolean) => setExpand(expend),
             toggle: () => setExpand(!expanded.value)
-        }
+        };
     }
     return {
         path,
