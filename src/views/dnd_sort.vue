@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { ref, toRaw } from 'vue'
 import DndSort from '@/components/qxt-vue/dnd-sort/DndSort.vue'
-import type { IChangeResult } from '@/components/qxt-vue/dnd-sort/type'
+import type { IChangeResult, IExpendEvent } from '@/components/qxt-vue/dnd-sort/type'
+import { Button } from '@/components/ui/button'
 
 const children = [
     { id: '6', title: '三目 C1', description: '这是第六个可拖拽项目' },
@@ -37,6 +38,7 @@ const tree = ref([
 ])
 
 const planTree = toRaw(list1.value);
+const expandMap = ref({});
 
 const handleChange = (detail: IChangeResult) => {
     console.log('---change:', detail);
@@ -54,16 +56,24 @@ const handleSort = (detail: IChangeResult) => {
     //console.log(from.path.join(' -> '), isUp ? '上移' : '下移', '到', toPath.join(' -> '), isBefore ? '前' : '后');
 }
 
+const onExpend = (show: any, detail: IExpendEvent) => {
+    console.log('---onExpend', show, detail)
+}
 </script>
 
 <template>
     <div>响应式数据排序</div>
     <div class="flex gap-3">
         <div class="w-2/3">
-            <DndSort v-model="tree" dnd-name="mytree" root-class="my-root" @change="handleChange">
-                <template #default="{ item }">
+            <DndSort v-model="tree" expand dnd-name="mytree" root-class="my-root" @change="handleChange"
+                @expand="onExpend">
+                <template #default="{ item, expand }">
                     <div class="item p-2 border border-gray-300 rounded-md">
-                        <h3 class="text-lg font-bold">{{ item.title }}</h3>
+                        <h3 class="text-lg font-bold">{{ item.title }}
+                            <Button v-if="expand" variant="outline" size="sm" @click="expand.toggle">
+                                {{ expand.get() ? '收起' : '展开' }}
+                            </Button>
+                        </h3>
                         <p class="text-sm text-gray-500">{{ item.description }}</p>
                     </div>
                 </template>
@@ -71,6 +81,7 @@ const handleSort = (detail: IChangeResult) => {
         </div>
         <div class="w-1/3 overflow-auto relative">
             <div class="absolute inset-0 overflow-auto">
+                <pre>{{ expandMap }}</pre>
                 <pre>{{ tree }}</pre>
             </div>
         </div>
@@ -119,14 +130,14 @@ const handleSort = (detail: IChangeResult) => {
     position: relative;
 }
 
-.dnd-item-handle::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-}
+// .dnd-item-handle::after {
+//     content: '';
+//     position: absolute;
+//     top: 0;
+//     left: 0;
+//     width: 100%;
+//     height: 100%;
+// }
 
 .dnd-over .dnd-item-handle::before {
     content: '';

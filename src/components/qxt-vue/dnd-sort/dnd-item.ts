@@ -153,7 +153,7 @@ export const useDndItem = (props: IItemProps, itemData: any) => {
 }
 
 export const useItemAttrs = (props: IItemProps, options?: any) => {
-    const { rootId, dndName, dndPath, rootClass, itemClass, handleClass, manualSort, onChange } = props;
+    const { rootId, dndName, dndPath, rootClass, itemClass, handleClass, manualSort, expand, onChange, onExpand } = props;
     return {
         rootId,
         dndName,
@@ -162,7 +162,9 @@ export const useItemAttrs = (props: IItemProps, options?: any) => {
         itemClass,
         handleClass,
         manualSort,
+        expand,
         onChange,
+        onExpand,
         ...options,
     }
 }

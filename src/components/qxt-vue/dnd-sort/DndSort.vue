@@ -1,7 +1,9 @@
 <script setup lang="ts">
+import type { IExpendResult } from './type';
 import { useId, computed } from 'vue';
 import { useDndBus } from './dnd-hook';
 import DndRoot from './DndRoot.vue';
+
 type ISortProps = {
     dndName?: string;
     childKey?: string;
@@ -9,9 +11,10 @@ type ISortProps = {
     itemClass?: string;
     handleClass?: string;
     manualSort?: boolean;
+    expand?: boolean | ((item: any) => boolean);
 }
 
-const emit = defineEmits(['change']);
+const emit = defineEmits(['change', 'expand']);
 const rootId = useId();
 const props = defineProps<ISortProps>();
 const dndName = props.dndName || rootId;
@@ -20,10 +23,14 @@ const childKey = props.childKey || 'children';
 const onChange = (detail: any) => {
     emit('change', detail);
 }
+// 触发Expend
+const onExpand = (detail: IExpendResult) => {
+    emit('expand', detail);
+}
 
 const list = defineModel<any[]>();
 const rootAttrs = computed(() => {
-    const { rootClass, itemClass, handleClass, manualSort } = props
+    const { rootClass, itemClass, handleClass, expand, manualSort } = props
     return {
         dndPath: [] as number[],
         dndName,
@@ -32,7 +39,9 @@ const rootAttrs = computed(() => {
         itemClass,
         handleClass,
         manualSort,
+        expand,
         onChange,
+        onExpand,
     }
 })
 const dndBus = useDndBus(dndName);
@@ -56,10 +65,12 @@ dndBus.treeMap.set(rootId, list.value);
     position: relative;
     z-index: 1;
 }
-.dnd-separator.hori{
+
+.dnd-separator.hori {
     height: 0;
 }
-.dnd-separator.vert{
+
+.dnd-separator.vert {
     width: 0;
 }
 
