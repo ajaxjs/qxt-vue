@@ -1,0 +1,190 @@
+[
+    {
+        "tag": "Board",
+        "fill": "none",
+        "width": 300,
+        "height": 300,
+        "id": "board-1",
+        "name": "画板 1",
+        "x": 0,
+        "y": 0,
+        "data": {},
+        "children": [
+            {
+                "tag": "Rect",
+                "name": "background",
+                "locked": true,
+                "width": 300,
+                "height": 300,
+                "fill": "rgba(255,255,255,1)"
+            },
+            {
+                "tag": "Rect",
+                "x": 31.791666666666657,
+                "y": 142.04166666666666,
+                "width": 100,
+                "height": 100,
+                "draggable": true,
+                "editable": true,
+                "fill": "#9013fe",
+                "cornerRadius": 10
+            },
+            {
+                "tag": "Ellipse",
+                "startAngle": -60,
+                "endAngle": 180,
+                "x": 16.541666666666657,
+                "y": 9.125,
+                "width": 100,
+                "height": 100,
+                "draggable": true,
+                "editable": true,
+                "fill": "#32cd79"
+            },
+            {
+                "tag": "Group",
+                "x": 150.375,
+                "y": 28.708333333333314,
+                "scaleX": 1,
+                "scaleY": 1,
+                "rotation": 0,
+                "skewX": 0,
+                "skewY": 0,
+                "editable": true,
+                "hitChildren": false,
+                "children": [
+                    {
+                        "tag": "Star",
+                        "corners": 8,
+                        "innerRadius": 0.5,
+                        "x": 0,
+                        "y": 0,
+                        "width": 100,
+                        "height": 100,
+                        "scaleX": 1,
+                        "scaleY": 1,
+                        "rotation": 0,
+                        "skewX": 0,
+                        "skewY": 0,
+                        "draggable": true,
+                        "editable": true,
+                        "fill": "#f5a623",
+                        "cornerRadius": 5
+                    },
+                    {
+                        "tag": "Ellipse",
+                        "x": 24.5161332303407,
+                        "y": 147.34946656367384,
+                        "width": 61.96773353931867,
+                        "height": 61.96773353931867,
+                        "scaleX": 1,
+                        "scaleY": 1,
+                        "rotation": 0,
+                        "skewX": 0,
+                        "skewY": 0,
+                        "draggable": true,
+                        "editable": true,
+                        "fill": "#7ed321"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "tag": "Board",
+        "fill": "none",
+        "width": 300,
+        "height": 300,
+        "id": "board-2",
+        "name": "画板 2",
+        "x": 350,
+        "y": 0,
+        "data": {},
+        "children": [
+            {
+                "tag": "Rect",
+                "name": "background",
+                "locked": true,
+                "width": 300,
+                "height": 300,
+                "fill": "rgba(255,255,255,1)"
+            },
+            {
+                "tag": "Star",
+                "corners": 5,
+                "x": 6.958333333333329,
+                "y": 32.87499999999999,
+                "width": 100,
+                "height": 100,
+                "draggable": true,
+                "editable": true,
+                "fill": "#32cd79"
+            },
+            {
+                "tag": "Polygon",
+                "sides": 6,
+                "height": 100,
+                "x": 112.875,
+                "y": 21.375,
+                "width": 100,
+                "scaleX": 1,
+                "scaleY": 1,
+                "rotation": 0,
+                "skewX": 0,
+                "skewY": 0,
+                "draggable": true,
+                "editable": true,
+                "fill": "#f5a623",
+                "cornerRadius": 10
+            },
+            {
+                "tag": "Group",
+                "x": 21.125,
+                "y": 172.54166666666663,
+                "scaleX": 1,
+                "scaleY": 1,
+                "rotation": 0,
+                "skewX": 0,
+                "skewY": 0,
+                "editable": true,
+                "hitChildren": false,
+                "children": [
+                    {
+                        "tag": "Star",
+                        "corners": 6,
+                        "innerRadius": 0.15,
+                        "x": 0,
+                        "y": 0,
+                        "width": 100,
+                        "height": 100,
+                        "scaleX": 1,
+                        "scaleY": 1,
+                        "rotation": 0,
+                        "skewX": 0,
+                        "skewY": 0,
+                        "draggable": true,
+                        "editable": true,
+                        "fill": "#32cd79"
+                    },
+                    {
+                        "tag": "Star",
+                        "corners": 3,
+                        "innerRadius": 0.15,
+                        "x": 125.79276142129015,
+                        "y": 18.376094754623523,
+                        "width": 63.914477157419974,
+                        "height": 63.914477157419974,
+                        "scaleX": 1,
+                        "scaleY": 1,
+                        "rotation": 0,
+                        "skewX": 0,
+                        "skewY": 0,
+                        "draggable": true,
+                        "editable": true,
+                        "fill": "#bd10e0"
+                    }
+                ]
+            }
+        ]
+    }
+]

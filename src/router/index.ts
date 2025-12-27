@@ -6,6 +6,7 @@ export const routes = [
     { path: '/picker', component: () => import('@/views/picker.vue'), meta: { title: '选择器' } },
     { path: '/form', component: () => import('@/views/form.vue'), meta: { title: '表单' } },
     { path: '/dnd_sort', component: () => import('@/views/dnd_sort.vue'), meta: { title: '拖拽排序' } },
+    { path: '/tree_sort', component: () => import('@/views/tree_sort/index.vue'), meta: { title: '树排序' } },
     { path: '/chat', component: () => import('@/views/chat.vue'), meta: { title: '聊天' } },
 ]
 
