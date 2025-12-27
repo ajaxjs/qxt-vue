@@ -1,0 +1,12 @@
+{
+    "shadcn-vue": [
+        "dialog",
+        "button",
+        "drawer",
+        "input-group"
+    ],
+    "packages": [
+        "lucide-vue-next",
+        "mitt"
+    ]
+}
